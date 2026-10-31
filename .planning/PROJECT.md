@@ -21,7 +21,7 @@ Full original specification: `SPEC.md` (repo root). This document supersedes it 
 - [ ] Discover real Shelly Cloud response shapes per device model (`probe`), commit sanitized fixtures, derive parsers from them
 - [ ] Unattended poller: all devices in one request per interval (default 60 s), ≤1 req/s, backoff + 429 handling, survives reboots and cloud/network outages
 - [ ] Deduplicated storage of raw, uncalibrated readings in SQLite with report-time source; every poll attempt logged so gaps are explainable; raw JSON retained (toggleable)
-- [ ] Outdoor weather (temperature, RH, and other useful variables, e.g. dew point, pressure, precipitation) for the flat's location from Open-Meteo, stored alongside sensor data, including backfill for the period already logged
+- [ ] Outdoor weather (temperature, RH, dew point, precipitation, and — because the slab is in ground contact — soil moisture/soil temperature; plus other cheap useful variables) for the flat's location from Open-Meteo, stored alongside sensor data, including backfill for the period already logged
 - [ ] Deployed on Bombur via the standard pipeline (GitHub Actions → GHCR → bombur-deploy) as early as possible — poller first, UI later
 - [ ] Alerts via ntfy.sh when polling fails for > 1 h, the auth key is rejected, or a sensor goes silent beyond a threshold
 - [ ] Derived metrics at read time: dew point, absolute humidity, wood EMC (Hailwood–Horrobin), with per-device calibration offsets; unit-tested
@@ -39,6 +39,7 @@ Full original specification: `SPEC.md` (repo root). This document supersedes it 
 
 ## Context
 
+- **Site history:** the flat is on the ground floor (level 0); the problem area (living room + kitchen) has **no cellar beneath — slab in ground contact**. A previously installed wooden floor there **warped badly** and was removed. The owner wants to reinstall a wooden floor if conditions allow. The sensors do not measure material moisture; their purpose is to characterize the **general environment the new floor would live in** (subfloor-surface air vs. reference rooms vs. outdoors), including how it responds to weather (rain, soil moisture, seasons). Ground-contact makes outdoor soil-moisture/soil-temperature and precipitation data relevant.
 - Owner is an embedded/systems developer (C, Rust, Python) who values clean, minimal, well-automated solutions. Cares about the result; **technical and architectural choices in SPEC.md are recommendations, not mandates.**
 - Devices: 5× H&T Gen1, 1× H&T Gen3, 1× Flood Gen1 (temperature only, no RH). Device IDs and which unit is the Gen3 are not yet known — to be collected during the probe step.
 - Devices sleep and push to Shelly Cloud only on change (threshold 0.5 °C / 0.5 %RH) or periodic wake. The cloud holds only the last state → poll faster than target resolution; values are sample-and-hold (forward-fill / step semantics everywhere; time-weighted means).
