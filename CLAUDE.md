@@ -8,7 +8,7 @@ Greenfield. The only source of truth is `SPEC.md` — read it fully before writi
 
 ## Secrets and live credentials
 
-`.env` (Shelly key/host) and `devices.toml` are gitignored. A hook blocks Claude from reading `.env` in any form — don't try to work around it. Code loads secrets at runtime; when a command needs live credentials, ask the owner to run it with the `!` prefix and make sure it never prints the key. The repo is public: never write real device IDs, MACs, IPs, SSIDs or coordinates into committed files (fixtures must be sanitized). Verify commands must not contain the literal text `.env` (`.env.example` is fine).
+`.env` (Shelly key/host) and `devices.toml` are gitignored. A hook blocks Claude from reading `.env` in any form — don't try to work around it. The app loads `./.env` from its working directory by itself, so Claude may run live commands (`uv run shelog …`, `scripts/live.sh …`) autonomously — the owner approved this (2026-10-31). Those commands must never print the key, and the real key is only ever sent to the configured `SHELLY_HOST` (drills and wrong-host tests use a dummy key). Never exceed 1 request/second to Shelly, including in probes/tests — no deliberate bursts. The repo is public: never write real device IDs, MACs, IPs, SSIDs or coordinates into committed files (fixtures must be sanitized). Verify commands must not contain the literal text `.env` (`.env.example` is fine).
 
 ## What this is
 
@@ -30,7 +30,7 @@ uv run shelly-climate-log probe|poll [--once]|serve|export|calibrate
 
 Two independent processes share one SQLite DB (WAL mode):
 
-- **Poller** (long-running): one `POST /v2/devices/api/get` per interval (default 60 s, jittered) for all devices; exponential backoff, honour 429; never exceed 1 req/s per account. Logs every attempt to `poll_log` so gaps are explainable.
+- **Poller** (long-running): one `POST /device/all_status` (v1, key in the form body; returns all devices) per interval (default 60 s, jittered); exponential backoff, honour 429; never exceed 1 req/s per account. Logs every attempt to `poll_log` so gaps are explainable.
 - **Web app** (FastAPI or similar): opens the DB **read-only**; serves `/api/devices`, `/api/readings`, `/api/stats`, `/api/health` plus the static page.
 
 Device inventory lives in `devices.toml` (id, name, group `subfloor|reference`, model, calibration offsets) — never hard-code devices. Secrets (`auth_key`, host) come from an env file, never logged or committed.
