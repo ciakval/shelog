@@ -8,7 +8,7 @@ Greenfield. The only source of truth is `SPEC.md` — read it fully before writi
 
 ## Secrets and live credentials
 
-`.env` (Shelly key/host) and `devices.toml` are gitignored. A hook blocks Claude from reading `.env` in any form — don't try to work around it. Code loads secrets at runtime; when a command needs live credentials, ask the owner to run it with the `!` prefix and make sure it never prints the key.
+`.env` (Shelly key/host) and `devices.toml` are gitignored. A hook blocks Claude from reading `.env` in any form — don't try to work around it. Code loads secrets at runtime; when a command needs live credentials, ask the owner to run it with the `!` prefix and make sure it never prints the key. The repo is public: never write real device IDs, MACs, IPs, SSIDs or coordinates into committed files (fixtures must be sanitized). Verify commands must not contain the literal text `.env` (`.env.example` is fine).
 
 ## What this is
 
