@@ -64,7 +64,8 @@ None yet.
 
 ### Blockers/Concerns
 
-- [Phase 1]: Probe is blocked until the owner provides the Shelly auth key and host and runs `shelog probe` locally
+- [Phase 1]: Credentials are in place (repo-root env file + gitignored devices.toml); the app loads the env file itself, so Claude can run `uv run shelog …` live
+- [Phase 2, before first push]: Commit 3a43a40 contains real device IDs in 01-CONTEXT.md (redacted in 98cdb4d). History must be rewritten (or squashed) before pushing to the public repo — ask owner
 - [Phase 2]: Owner actions needed. No GitHub remote exists yet, `main` needs protecting, `bombur-onboard` must be run, and the server `.env` and `devices.toml` must be filled in. Don't use `CHANGE_ME` for the Shelly values.
 - [Phase 2]: Decide whether to pull forward the external dead-man's switch (ROB-01), because alerts sent by the poller can't report that the poller or the VPS is dead
 - [Phase 3]: Must ship within 92 days of Phase 2 going live, or the first days of the record can only be backfilled from the historical-forecast API
