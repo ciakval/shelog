@@ -6,6 +6,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Greenfield. The only source of truth is `SPEC.md` — read it fully before writing code. Sections marked **TBD** (device IDs, Shelly status field paths, v2 response envelope) must be resolved with the user or from real API responses, not guessed. Update this file once the project skeleton exists.
 
+## Secrets and live credentials
+
+`.env` (Shelly key/host) and `devices.toml` are gitignored. A hook blocks Claude from reading `.env` in any form — don't try to work around it. Code loads secrets at runtime; when a command needs live credentials, ask the owner to run it with the `!` prefix and make sure it never prints the key.
+
 ## What this is
 
 `shelly-climate-log`: polls Shelly Cloud for 7 battery-powered temperature/humidity sensors (H&T Gen1/Gen3, Flood Gen1) that monitor a drying subfloor, stores readings in SQLite, and serves a single-page chart UI with wood-flooring metrics (dew point, absolute humidity, wood EMC).
