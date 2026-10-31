@@ -29,18 +29,20 @@ Decimal phases appear between their surrounding integers in numeric order.
   2. For each model, a document records which field holds the real report time (`ts_source`, with its timezone meaning) and each device's reporting settings (wake period, thresholds, any on-device offset). Each device in `devices.toml` has a silence threshold based on those settings, and only `devices.example.toml` is in the repo.
   3. After running locally against the real account for at least an hour, the poller has sent one batched request per interval and never more than 1 request per second. The database holds a new row only when a device's report time moved forward, with raw uncalibrated T, RH, battery and flood values, sensor-error nulls kept as null, and the raw JSON saved alongside. Implausible timestamps were rejected and counted.
   4. A wrong key, a simulated HTTP 429 with Retry-After, and a network outage each cause capped backoff and a poll-log row with an outcome category. A wrong key also shows up as a separate "auth rejected" state. A search of the logs, error text and database finds no trace of the auth key.
-**Plans**: 6 plans
+**Plans**: 8 plans
 
 Plans:
-- [ ] 01-01-PLAN.md: Tracer. Scaffold (Python 3.13, uv, zero runtime deps) plus an end-to-end `shelog poll --once` (real all_status to SQLite, schema 0001) and the baseline `shelog probe` (wave 1)
-- [ ] 01-02-PLAN.md: Sanitizer, sanitized real fixtures, fixture-safety tests, and complete parse/dedup rules (wave 2)
-- [ ] 01-03-PLAN.md: Resilient poll loop: rate guard, classifier proven on real sockets, capped backoff, Retry-After, auth state, single-instance lock (wave 2)
-- [ ] 01-04-PLAN.md: Secret hygiene and strict config: redacting logs, the `shelog check` leak scan, strict devices.toml, example files (wave 2)
-- [ ] 01-05-PLAN.md: Live probe of error envelopes, v2 and settings; docs/shelly-api.md; classifier pinned to fixtures; per-device silence thresholds (wave 3)
-- [ ] 01-06-PLAN.md: Phase acceptance: e2e sentinel leak test, wrong-key and outage drills, one-hour real run with an aggregate report (wave 4)
+- [ ] 01-01-PLAN.md: Tracer. Scaffold (Python 3.13, uv, zero runtime deps), config, rate-guarded client and a live `shelog probe` baseline run from git worktrees via `scripts/live.sh` (wave 1)
+- [ ] 01-02-PLAN.md: Tracer, continued. End-to-end `shelog poll --once`: schema 0001, parse, dedup, real all_status to SQLite (wave 2)
+- [ ] 01-03-PLAN.md: Sanitizer, sanitized real fixtures, real-id and configured-key scans over every tracked file, and complete parse/dedup rules (wave 3)
+- [ ] 01-04-PLAN.md: Resilient poll loop: classifier proven on real sockets, synthetic rate-limit fixture, capped backoff, Retry-After, auth state, single-instance lock (wave 3)
+- [ ] 01-05-PLAN.md: Secret hygiene and strict config: redacting logs, the `shelog check` leak scan, strict devices.toml, example files (wave 3)
+- [ ] 01-06-PLAN.md: Probe step matrix (v1/v2, error group, dummy-key wrong host, no bursts) and the sanitized `--save-fixtures` export (wave 4)
+- [ ] 01-07-PLAN.md: Live probe capture; classifier pinned to real envelopes; docs/shelly-api.md; per-device silence thresholds with provenance; COVERAGE re-validation (wave 5)
+- [ ] 01-08-PLAN.md: Phase acceptance: e2e sentinel leak test, dummy-key wrong-key and outage drills, one-hour real run with an aggregate report, CLAUDE.md refresh (wave 6)
 **Owner action required**:
   - Provide the Shelly Cloud auth key and server host (Shelly app: User settings > Authorization cloud key) as a local env file only, and list the seven device IDs (including which unit is the H&T Gen3) in a local `devices.toml`.
-  - Run `shelog probe` locally with real credentials. This is a hard gate: parsers and fixtures cannot be written until real responses exist. Check reporting settings in the Shelly app if the API doesn't return them.
+  - `shelog probe` runs locally with the real credentials (Claude may run it; owner-approved 2026-10-31); parsers and fixtures derive from its real responses. Optional: check reporting settings in the Shelly app. Gen1 wake periods the API doesn't return use the documented default (source `default`) and are tuned from observed report gaps in Phase 2, so no owner step blocks Phase 1.
 **Notes**: Needs research first (Shelly v2 response shapes, timestamp semantics, partial-batch failures, whether the auth key can travel outside the URL). Define the full schema (readings, raw_status, outdoor, poll_log, alert_state, meta) on day one so later phases only add to it.
 
 ### Phase 2: Collection Live on Bombur

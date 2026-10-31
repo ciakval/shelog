@@ -1,7 +1,7 @@
 # Phase 1: Shelly Cloud Control API coverage
 
 **Written:** 2026-10-31 by the phase planner (API coverage checkpoint).
-**Re-validated by:** plan 01-05 Task 2, which replaces each probe-pending tag in the reason column with live evidence.
+**Re-validated by:** plan 01-07 Task 2, which replaces each probe-pending tag in the reason column with live evidence. Like every `.planning/` file, this table holds device names and aggregate or pseudonymized values only; plan 01-03's real-id and key scans cover it.
 **Sources:** shelly-api-docs.shelly.cloud `cloud-control-api/` (Getting Started), `communication` (v1, marked deprecated), `communication-v2` (v2.0-beta), `real-time-events`; 01-RESEARCH.md; live discovery run of 2026-10-31 (CONTEXT D-06..D-08).
 
 shelog is a read-only logger (REQUIREMENTS "Out of Scope": device control / settings changes). Every control capability is therefore OPT-OUT. All requests share the account-wide 1 request/second limit.
@@ -25,5 +25,5 @@ shelog is a read-only logger (REQUIREMENTS "Out of Scope": device control / sett
 | OAuth login + token exchange (`my.shelly.cloud/oauth_login.html`, `/oauth/auth`) | OPT-OUT | Only needed for Real Time Events. The auth key is enough for polling, and OAuth would add an interactive login and token refresh to an unattended service. |
 | Statistics / history charts | OPT-OUT | The Cloud Control API documents no history endpoint. A cloud-stats backfill importer is v2 backlog item ROB-03. |
 | Integrator API (cloud-to-cloud, many accounts) | OPT-OUT | Meant for third-party integrators. shelog reads one owner account. |
-| Account rate limit (1 request/second) | INTEGRATE | `RateGuard` keeps at least 1.1 s between any two requests (poller and probe). HTTP 429 / `Retry-After` and `isok:false` + `max_req` map to `rate_limited` with capped backoff (COLL-01/02). |
+| Account rate limit (1 request/second) | INTEGRATE | `RateGuard` keeps at least 1.1 s between any two requests (poller and probe), with no way to skip it and no deliberate bursts. HTTP 429 / `Retry-After` and `isok:false` + `max_req` map to `rate_limited` with capped backoff (COLL-01/02). The real throttle envelope is unverified: it is never provoked live, and `tests/fixtures/shelly/synthetic_rate_limit.json` (plan 01-04) covers it. |
 | Server URI relocation and auth-key rotation | INTEGRATE | The host comes from `SHELLY_HOST`. A rejected key becomes a distinct `rejected` auth state, stored in `meta` and logged loudly. A vanished v1 route maps to `endpoint_gone` (COLL-02). |
