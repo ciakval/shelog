@@ -1,0 +1,10 @@
+.env
+.env.*
+!.env.example
+devices.toml
+data/
+.venv/
+__pycache__/
+*.db
+*.db-wal
+*.db-shm
