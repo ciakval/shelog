@@ -32,7 +32,7 @@ Owner runs the collector locally against the real Shelly account and gets dedupl
   - No `_dev_info`/model code in the v1 envelope → model comes from `devices.toml` (`model = ht_gen1 | ht_gen3 | flood_gen1`), optionally cross-checked against keys.
 - **D-09:** A raw snapshot of the live response exists at the scratchpad path `/tmp/claude-1000/-home-ciakval-GIT-shelog/835d21f7-af00-4c70-9137-da6bea6a204e/scratchpad/all_status.json` (contains MACs, SSIDs, IPs, real IDs — must be sanitized before anything from it is committed). It may not survive; the `probe` command must be able to regenerate it.
 
-### Devices (owner-confirmed mapping; lives in gitignored `devices.toml`, already written at repo root)
+### Devices (owner-confirmed; real IDs ONLY in gitignored `devices.toml` at repo root — never write real device IDs into committed files)
 - **D-10:** LR-1 (outer corner, assumed worst), LR-2 (near corner), LR-3, LR-4 (Gen3), LR-Flood (centre) — group `subfloor`; Work, Bedroom — group `reference`. All Gen1 except LR-4 (Gen3) and Flood. Fields: `id, name, note, group, model, t_offset, rh_offset` (+ optional per-device silence threshold).
 - **D-11:** Reporting cadence is long and per model (Gen1 battery ~12 h max wake period unless a 0.5 °C / 0.5 %RH threshold is crossed; Gen3 ~2 h). Silence thresholds are per device/model, never a flat 6 h. Observed first look: one sensor last reported 4 h earlier.
 
