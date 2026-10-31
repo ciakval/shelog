@@ -99,13 +99,48 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| (filled by roadmap) | | |
+| PROBE-01 | Phase 1 | Pending |
+| PROBE-02 | Phase 1 | Pending |
+| PROBE-03 | Phase 1 | Pending |
+| PROBE-04 | Phase 1 | Pending |
+| PROBE-05 | Phase 1 | Pending |
+| COLL-01 | Phase 1 | Pending |
+| COLL-02 | Phase 1 | Pending |
+| COLL-03 | Phase 1 | Pending |
+| COLL-04 | Phase 1 | Pending |
+| COLL-05 | Phase 1 | Pending |
+| COLL-06 | Phase 1 | Pending |
+| COLL-07 | Phase 1 | Pending |
+| COLL-08 | Phase 1 | Pending |
+| WX-01 | Phase 3 | Pending |
+| WX-02 | Phase 3 | Pending |
+| WX-03 | Phase 3 | Pending |
+| WX-04 | Phase 3 | Pending |
+| OPS-01 | Phase 2 | Pending |
+| OPS-02 | Phase 2 | Pending |
+| OPS-03 | Phase 2 | Pending |
+| OPS-04 | Phase 2 | Pending |
+| OPS-05 | Phase 2 | Pending |
+| OPS-06 | Phase 2 | Pending |
+| DATA-01 | Phase 4 | Pending |
+| DATA-02 | Phase 4 | Pending |
+| DATA-03 | Phase 4 | Pending |
+| DATA-04 | Phase 4 | Pending |
+| DATA-05 | Phase 2 | Pending |
+| DATA-06 | Phase 4 | Pending |
+| UI-01 | Phase 5 | Pending |
+| UI-02 | Phase 5 | Pending |
+| UI-03 | Phase 5 | Pending |
+| UI-04 | Phase 5 | Pending |
+| UI-05 | Phase 5 | Pending |
+| UI-06 | Phase 5 | Pending |
+| UI-07 | Phase 5 | Pending |
 
 **Coverage:**
 - v1 requirements: 36 total
-- Mapped to phases: 0
-- Unmapped: 36 ⚠️
+- Mapped to phases: 36
+- Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-10-31*
-*Last updated: 2026-10-31 after initial definition*
+*Last updated: 2026-10-31 after roadmap creation (traceability filled)*
