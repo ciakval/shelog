@@ -29,7 +29,15 @@ Decimal phases appear between their surrounding integers in numeric order.
   2. For each model, a document records which field holds the real report time (`ts_source`, with its timezone meaning) and each device's reporting settings (wake period, thresholds, any on-device offset). Each device in `devices.toml` has a silence threshold based on those settings, and only `devices.example.toml` is in the repo.
   3. After running locally against the real account for at least an hour, the poller has sent one batched request per interval and never more than 1 request per second. The database holds a new row only when a device's report time moved forward, with raw uncalibrated T, RH, battery and flood values, sensor-error nulls kept as null, and the raw JSON saved alongside. Implausible timestamps were rejected and counted.
   4. A wrong key, a simulated HTTP 429 with Retry-After, and a network outage each cause capped backoff and a poll-log row with an outcome category. A wrong key also shows up as a separate "auth rejected" state. A search of the logs, error text and database finds no trace of the auth key.
-**Plans**: TBD
+**Plans**: 6 plans
+
+Plans:
+- [ ] 01-01-PLAN.md: Tracer. Scaffold (Python 3.13, uv, zero runtime deps) plus an end-to-end `shelog poll --once` (real all_status to SQLite, schema 0001) and the baseline `shelog probe` (wave 1)
+- [ ] 01-02-PLAN.md: Sanitizer, sanitized real fixtures, fixture-safety tests, and complete parse/dedup rules (wave 2)
+- [ ] 01-03-PLAN.md: Resilient poll loop: rate guard, classifier proven on real sockets, capped backoff, Retry-After, auth state, single-instance lock (wave 2)
+- [ ] 01-04-PLAN.md: Secret hygiene and strict config: redacting logs, the `shelog check` leak scan, strict devices.toml, example files (wave 2)
+- [ ] 01-05-PLAN.md: Live probe of error envelopes, v2 and settings; docs/shelly-api.md; classifier pinned to fixtures; per-device silence thresholds (wave 3)
+- [ ] 01-06-PLAN.md: Phase acceptance: e2e sentinel leak test, wrong-key and outage drills, one-hour real run with an aggregate report (wave 4)
 **Owner action required**:
   - Provide the Shelly Cloud auth key and server host (Shelly app: User settings > Authorization cloud key) as a local env file only, and list the seven device IDs (including which unit is the H&T Gen3) in a local `devices.toml`.
   - Run `shelog probe` locally with real credentials. This is a hard gate: parsers and fixtures cannot be written until real responses exist. Check reporting settings in the Shelly app if the API doesn't return them.
@@ -102,7 +110,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Probe & Core Collector | 0/TBD | Not started | - |
+| 1. Probe & Core Collector | 0/6 | Not started | - |
 | 2. Collection Live on Bombur | 0/TBD | Not started | - |
 | 3. Outdoor Weather | 0/TBD | Not started | - |
 | 4. Metrics & Read API | 0/TBD | Not started | - |
