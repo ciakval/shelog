@@ -66,6 +66,7 @@ Full original specification: `SPEC.md` (repo root). This document supersedes it 
 | Public read-only UI, no auth | It's only climate data; simplest access | — Pending |
 | Alerting via ntfy.sh | Trivial phone push, no SMTP needed | — Pending |
 | Repo stays public; `devices.toml` lives on the server (bind-mounted), not in the image/repo — only a `devices.example.toml` is committed | Device IDs must not be published | — Pending |
+| No additional hardware (e.g. smart plugs on dehumidifiers); dehumidifier on/off tracking deferred (annotations stay v2) | Owner: focus on collecting data now | — Pending |
 | App name `shelog` (`shelog.remesh.cz`, container `shelog-web`) | Matches repo | — Pending |
 | Recommended (not mandated) stack: Python ≥3.11, uv, httpx, stdlib sqlite3 (WAL), small web framework, vanilla JS + uPlot | From SPEC; owner treats tech choices as recommendations | — Pending |
 | Store raw uncalibrated values; derive metrics + calibration at read time | Keeps data reusable if formulas/offsets change | — Pending |
