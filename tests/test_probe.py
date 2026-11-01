@@ -12,6 +12,7 @@ from datetime import UTC, datetime
 from pathlib import Path
 from urllib.parse import parse_qs, urlsplit
 
+import pytest
 from conftest import SENTINEL_KEY, TEST_HOST, FakeClock, FakeSend, SendCall
 
 from shelog import probe
@@ -489,3 +490,298 @@ def test_probe_main_runs_when_the_lock_is_free(test_settings, test_devices, fake
 
     assert code == 0
     assert len(send.calls) == len(DEFAULT_STEPS)
+
+
+# ---------------------------------------------------------------------------
+# --save-fixtures export (Task 2)
+# ---------------------------------------------------------------------------
+
+FAB_DEVICES = (
+    Device(id="a1b2c3d4e5f6", name="F-HT3", group="reference", model="ht_gen3"),
+    Device(id="b0a710", name="F-FLOOD", group="subfloor", model="flood_gen1"),
+    Device(id="c0ffee", name="F-HT1", group="subfloor", model="ht_gen1"),
+)
+FAB_ORIGINALS = (
+    *(d.id for d in FAB_DEVICES),
+    FAB_MAC,
+    FAB_IP,
+    FAB_SSID,
+    DUMMY_KEY,
+)
+
+
+def _export(
+    settings,
+    devices,
+    clock,
+    tmp_path,
+    out_dir,
+    *,
+    responses=None,
+    errors=True,
+    wrong_host=True,
+):
+    return _run(
+        settings,
+        devices,
+        clock,
+        tmp_path / "probe",
+        errors=errors,
+        wrong_host=wrong_host,
+        responses=responses,
+        save_fixtures=out_dir,
+    )
+
+
+def _tree(path: Path) -> dict[str, bytes]:
+    if not path.exists():
+        return {}
+    return {
+        str(p.relative_to(path)): p.read_bytes() for p in sorted(path.rglob("*")) if p.is_file()
+    }
+
+
+def test_export_writes_scan_clean_files_and_keeps_the_committed_v1_fixture(
+    test_settings, fake_clock, tmp_path
+):
+    from shelog.sanitize import scan
+
+    out_dir = tmp_path / "fixtures"
+    out_dir.mkdir()
+    (out_dir / "v1_all_status.json").write_bytes(b"committed fixture, do not touch")
+
+    code, _send = _export(test_settings, FAB_DEVICES, fake_clock, tmp_path, out_dir)
+
+    assert code == 0
+    files = _tree(out_dir)
+    assert set(files) == {
+        "v1_all_status.json",
+        "v1_all_status_info.json",
+        "v2_get_status.json",
+        "v2_get_settings.json",
+        "errors.json",
+    }
+    assert files["v1_all_status.json"] == b"committed fixture, do not touch"
+    for name, data in files.items():
+        if name == "v1_all_status.json":
+            continue
+        text = data.decode()
+        assert scan(text) == []
+        for original in FAB_ORIGINALS:
+            assert original.lower() not in text.lower()
+    assert not [n for n in files if n.endswith(".tmp")]
+
+
+def test_pseudo_ids_are_shared_across_files_and_match_the_v1_numbering(
+    test_settings, fake_clock, tmp_path
+):
+    from shelog.sanitize import build_mapping
+
+    out_dir = tmp_path / "fixtures"
+    _export(test_settings, FAB_DEVICES, fake_clock, tmp_path, out_dir)
+
+    v1_doc = json.loads(matrix_responses(fake_clock, FAB_DEVICES)[0].body)
+    mapping = build_mapping([v1_doc], extra_ids=[d.id for d in FAB_DEVICES])
+    expected = {d.id: mapping[d.id] for d in FAB_DEVICES}
+    assert (
+        sorted(expected.values()) == ["000002", "000003", "020000000001"]
+        or len(set(expected.values())) == 3
+    )
+
+    info = (out_dir / "v1_all_status_info.json").read_text()
+    for pseudo in expected.values():
+        assert pseudo in info
+    for name, models in (
+        ("v2_get_status.json", ("ht_gen3", "ht_gen1")),
+        ("v2_get_settings.json", ("ht_gen3", "ht_gen1")),
+    ):
+        text = (out_dir / name).read_text()
+        for dev in FAB_DEVICES:
+            if dev.model in models:
+                assert expected[dev.id] in text
+    errors_text = (out_dir / "errors.json").read_text()
+    assert expected[FAB_DEVICES[0].id] in errors_text  # unknown_id_v2 echoes the first id
+
+
+def test_errors_json_layout_and_values(test_settings, fake_clock, tmp_path):
+    from shelog.shelly.client import classify
+
+    out_dir = tmp_path / "fixtures"
+    _export(test_settings, FAB_DEVICES, fake_clock, tmp_path, out_dir)
+
+    doc = json.loads((out_dir / "errors.json").read_text())
+    assert list(doc) == sorted(doc)  # deterministic order
+    assert set(doc) == {*ERROR_STEPS, "wrong_host"}
+    for entry in doc.values():
+        assert set(entry) == {
+            "http_status",
+            "has_retry_after",
+            "key_placement",
+            "expected_category",
+            "body",
+        }
+    responses = matrix_responses(fake_clock, FAB_DEVICES)
+    for step, raw in zip(ERROR_STEPS, responses[4:11], strict=True):
+        assert doc[step]["http_status"] == raw.status
+        assert doc[step]["expected_category"] == classify(raw, fake_clock.time()).category
+    assert doc["v2_key_in_form"]["has_retry_after"] is True
+    assert doc["wrong_key_v1"]["has_retry_after"] is False
+    assert doc["v2_key_in_header"]["key_placement"] == "header"
+    assert doc["wrong_host"] == {
+        "http_status": None,
+        "has_retry_after": False,
+        "key_placement": "dummy",
+        "expected_category": "network",
+        "body": None,
+    }
+
+
+def test_non_json_body_is_wrapped_and_sanitized(test_settings, fake_clock, tmp_path):
+    out_dir = tmp_path / "fixtures"
+    _export(test_settings, FAB_DEVICES, fake_clock, tmp_path, out_dir)
+
+    doc = json.loads((out_dir / "errors.json").read_text())
+    body = doc["v1_device_settings"]["body"]
+    assert body == {"_non_json_body": "<html>no route 192.0.2.1</html>"}
+
+
+def test_non_json_body_is_cut_at_2000_chars(test_settings, fake_clock, tmp_path):
+    responses = matrix_responses(fake_clock, FAB_DEVICES)
+    responses[7] = RawResponse(502, {}, ("lorem ipsum " * 400).encode())
+    out_dir = tmp_path / "fixtures"
+    _export(test_settings, FAB_DEVICES, fake_clock, tmp_path, out_dir, responses=responses)
+
+    doc = json.loads((out_dir / "errors.json").read_text())
+    text = doc["v1_device_settings"]["body"]["_non_json_body"]
+    assert len(text) == 2000
+
+
+def test_dummy_key_echo_is_replaced_in_the_export(test_settings, fake_clock, tmp_path):
+    out_dir = tmp_path / "fixtures"
+    _export(test_settings, FAB_DEVICES, fake_clock, tmp_path, out_dir)
+
+    doc = json.loads((out_dir / "errors.json").read_text())
+    assert doc["wrong_key_v2"]["body"] == {"error": "bad key dummy-key"}
+
+
+def test_a_scan_finding_stops_the_export_and_writes_nothing(
+    test_settings, fake_clock, tmp_path, monkeypatch, capsys
+):
+    monkeypatch.setattr(
+        probe, "scan", lambda text, allowed_ids=None: ["mac_outside_pseudo_space at $"]
+    )
+    out_dir = tmp_path / "fixtures"
+    out_dir.mkdir()
+    (out_dir / "v1_all_status.json").write_bytes(b"committed")
+    before = _tree(out_dir)
+
+    code, _send = _export(test_settings, FAB_DEVICES, fake_clock, tmp_path, out_dir)
+
+    captured = capsys.readouterr()
+    assert code == 1
+    assert _tree(out_dir) == before
+    assert "mac_outside_pseudo_space" in captured.out + captured.err  # rule named, no value
+    for original in FAB_ORIGINALS:
+        assert original not in captured.out + captured.err
+
+
+def test_a_scan_finding_does_not_create_the_directory(
+    test_settings, fake_clock, tmp_path, monkeypatch
+):
+    monkeypatch.setattr(probe, "scan", lambda text, allowed_ids=None: ["long_token at $"])
+    out_dir = tmp_path / "fixtures"
+
+    code, _send = _export(test_settings, FAB_DEVICES, fake_clock, tmp_path, out_dir)
+
+    assert code == 1
+    assert not out_dir.exists()
+
+
+@pytest.mark.parametrize("form", ["raw", "quote", "quote_plus"])
+def test_a_body_carrying_the_real_key_stops_the_export(form, fake_clock, tmp_path, capsys):
+    from urllib.parse import quote, quote_plus
+
+    odd_key = "key with+odd/chars=1&x"
+    settings = Settings(
+        auth_key=Secret(odd_key),
+        host=TEST_HOST,
+        db_path=tmp_path / "data" / "shelog.db",
+        devices_file=tmp_path / "devices.toml",
+        poll_interval_s=60.0,
+        log_level="INFO",
+    )
+    leaked = {"raw": odd_key, "quote": quote(odd_key, safe=""), "quote_plus": quote_plus(odd_key)}[
+        form
+    ]
+    responses = matrix_responses(fake_clock, FAB_DEVICES)
+    responses[8] = _json_response(401, {"echo": f"your key was {leaked}"})  # wrong_key_v1
+    out_dir = tmp_path / "fixtures"
+
+    code, _send = _export(settings, FAB_DEVICES, fake_clock, tmp_path, out_dir, responses=responses)
+
+    captured = capsys.readouterr()
+    assert code == 1
+    assert not out_dir.exists()
+    for text in (captured.out, captured.err):
+        for candidate in (odd_key, quote(odd_key, safe=""), quote_plus(odd_key), "odd/chars"):
+            assert candidate not in text
+
+
+def test_a_sanitizer_refusal_writes_nothing(test_settings, fake_clock, tmp_path, capsys):
+    responses = matrix_responses(fake_clock, FAB_DEVICES)
+    bad = {
+        "isok": True,
+        "data": {"devices_status": {"not-a-hex-id": {"_updated": "2026-11-01 00:00:00"}}},
+    }
+    responses[0] = _json_response(200, bad)
+    out_dir = tmp_path / "fixtures"
+
+    code, _send = _export(
+        test_settings, FAB_DEVICES, fake_clock, tmp_path, out_dir, responses=responses
+    )
+
+    assert code == 1
+    assert not out_dir.exists()
+    assert "not-a-hex-id" not in capsys.readouterr().out
+
+
+def test_export_needs_the_v1_capture_for_consistent_numbering(test_settings, fake_clock, tmp_path):
+    responses = matrix_responses(fake_clock, FAB_DEVICES)
+    responses[0] = TransportError("network")
+    out_dir = tmp_path / "fixtures"
+
+    code, _send = _export(
+        test_settings, FAB_DEVICES, fake_clock, tmp_path, out_dir, responses=responses
+    )
+
+    assert code == 1
+    assert not out_dir.exists()
+
+
+def test_default_run_exports_the_success_files_only(test_settings, fake_clock, tmp_path):
+    out_dir = tmp_path / "fixtures"
+
+    code, _send = _export(
+        test_settings, FAB_DEVICES, fake_clock, tmp_path, out_dir, errors=False, wrong_host=False
+    )
+
+    assert code == 0
+    assert set(_tree(out_dir)) == {
+        "v1_all_status_info.json",
+        "v2_get_status.json",
+        "v2_get_settings.json",
+    }
+
+
+def test_cli_exposes_the_flags_and_no_rate_limit_testing_option():
+    from shelog import cli
+
+    parser = cli._build_parser()
+    args = parser.parse_args(["probe", "--errors", "--wrong-host", "--save-fixtures", "somewhere"])
+    assert args.errors is True
+    assert args.wrong_host is True
+    assert args.save_fixtures == Path("somewhere")
+    help_text = [a for a in parser._subparsers._group_actions[0].choices["probe"]._actions]
+    flags = {opt for action in help_text for opt in action.option_strings}
+    assert {"--errors", "--wrong-host", "--save-fixtures"} <= flags
+    assert not [f for f in flags if "provoke" in f or "force" in f or "burst" in f]
