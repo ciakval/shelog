@@ -3,16 +3,16 @@ gsd_state_version: "1.0"
 current_phase: 01
 current_phase_name: Probe & Core Collector
 status: executing
-stopped_at: Completed 01-02-PLAN.md
-last_updated: "2026-11-01T07:07:37.149Z"
+stopped_at: Completed 01-03-PLAN.md
+last_updated: "2026-11-01T07:16:30.368Z"
 last_activity: 2026-11-01
 last_activity_desc: Phase 01 execution started
-state_head: b188ba68c17697aab2318b8adfbc3603d75df207
+state_head: c16af3606d764b67e241ef7b7acdcf501b75726b
 progress:
   total_phases: 5
   completed_phases: 0
   total_plans: 8
-  completed_plans: 2
+  completed_plans: 3
   percent: 0
 ---
 
@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-10-31)
 ## Current Position
 
 Phase: 01 (Probe & Core Collector) — EXECUTING
-Plan: 3 of 8
+Plan: 4 of 8
 Status: Ready to execute
 Last activity: 2026-11-01 — Phase 01 execution started
 
@@ -58,6 +58,7 @@ Progress: [░░░░░░░░░░] 0%
 |------|----------|-------|-------|
 | Phase 01 P01 | 25 min | 2 tasks | 14 files |
 | Phase 01 P02 | 20min | 2 tasks | 9 files |
+| Phase 01 P03 | 35 min | 2 tasks | 9 files |
 
 ## Accumulated Context
 
@@ -73,6 +74,9 @@ Recent decisions affecting current work:
 - [Phase 01]: Zero runtime dependencies: stdlib urllib transport instead of httpx2
 - [Phase 01]: Live runs go through scripts/live.sh (main checkout root as CWD, 1.1 s start delay) instead of literal uv run shelog
 - [Phase 01]: Plan 01-02: reload last_states from DB after a partial insert; no-configured-device responses become no_devices failures
+- [Phase 01]: 01-03: field garbage (bool/NaN/non-numeric, non-bool flood) counts as a field reject like out-of-range values; null and is_valid=false are routine NULLs
+- [Phase 01]: 01-03: present-but-unparseable _updated is ParseReject bad_ts; absent _updated is a poll-source report deduped on value change
+- [Phase 01]: 01-03: leak guard layers scan git ls-files (tracked+untracked-not-ignored) incl. .planning/; SHELOG_REQUIRE_REAL_ID_SCAN=1 turns skips into failures
 
 ### Pending Todos
 
@@ -96,6 +100,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-11-01T07:07:37.117Z
-Stopped at: Completed 01-02-PLAN.md
+Last session: 2026-11-01T07:16:30.330Z
+Stopped at: Completed 01-03-PLAN.md
 Resume file: None
