@@ -108,7 +108,9 @@ def _bad_response(raw: RawResponse) -> Outcome:
 def classify(raw: RawResponse, now: float) -> Outcome:
     """Map a raw response to a closed outcome category."""
     status = raw.status
-    if status in (404, 410) or raw.body.lstrip().startswith(b"<"):
+    # Status decides first: a CDN/WAF HTML page on 401/403/429/5xx is still an auth, rate
+    # or server problem. Only a 200 that is HTML means the endpoint no longer speaks JSON.
+    if status in (404, 410) or (status == 200 and raw.body.lstrip().startswith(b"<")):
         return Outcome(ENDPOINT_GONE, status)
     if status == 429:
         return Outcome(RATE_LIMITED, status, retry_after_s=parse_retry_after(raw.headers, now))

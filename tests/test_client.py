@@ -66,6 +66,33 @@ CASES = [
 ]
 
 
+HTML_BODY = b"<!doctype html><html><body>blocked</body></html>"
+
+
+@pytest.mark.parametrize(
+    ("status", "expected"),
+    [
+        (401, AUTH),
+        (403, AUTH),
+        (429, RATE_LIMITED),
+        (500, HTTP_5XX),
+        (502, HTTP_5XX),
+        (503, HTTP_5XX),
+        (418, HTTP_OTHER),
+        (404, ENDPOINT_GONE),
+        (410, ENDPOINT_GONE),
+    ],
+)
+def test_html_error_pages_are_classified_by_status_first(status, expected):
+    assert classify(RawResponse(status, {}, HTML_BODY), NOW).category == expected
+
+
+def test_html_429_keeps_retry_after():
+    outcome = classify(RawResponse(429, {"retry-after": "30"}, HTML_BODY), NOW)
+    assert outcome.category == RATE_LIMITED
+    assert outcome.retry_after_s == 30.0
+
+
 @pytest.mark.parametrize(("raw", "expected"), [c[1:] for c in CASES], ids=[c[0] for c in CASES])
 def test_classify_table(raw, expected):
     assert classify(raw, NOW).category == expected
