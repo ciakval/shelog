@@ -44,6 +44,18 @@ class _Handler(BaseHTTPRequestHandler):
             self.send_response(200)
             self.send_header("Content-Length", "0")
             self.end_headers()
+        elif self.path == "/drip":
+            # Headers at once, then one byte every 0.3 s: no single socket read ever times out.
+            self.send_response(200)
+            self.send_header("Content-Length", "100")
+            self.end_headers()
+            for _ in range(100):
+                try:
+                    self.wfile.write(b"a")
+                    self.wfile.flush()
+                except OSError:
+                    return
+                time.sleep(0.3)
         elif self.path == "/big":
             payload = b"a" * (MAX_BODY + 100)
             self.send_response(200)
@@ -110,6 +122,27 @@ def test_timeout_maps_to_timeout(server):
     with pytest.raises(TransportError) as info:
         send(_url(server, "/slow"), timeout=0.5)
     assert info.value.category == "timeout"
+
+
+def test_timeout_is_a_wall_clock_deadline_for_a_slow_drip_body(server):
+    started = time.monotonic()
+    with pytest.raises(TransportError) as info:
+        send(_url(server, "/drip"), timeout=1.0)
+    elapsed = time.monotonic() - started
+    assert info.value.category == "timeout"
+    assert elapsed < 2.5
+
+
+def test_timeout_bounds_a_connection_that_never_answers():
+    with socket.socket() as sock:
+        sock.bind(("127.0.0.1", 0))
+        sock.listen(1)  # accepts the TCP handshake, never replies
+        port = sock.getsockname()[1]
+        started = time.monotonic()
+        with pytest.raises(TransportError) as info:
+            send(f"http://127.0.0.1:{port}/x", form={"auth_key": SENTINEL_KEY}, timeout=0.7)
+        assert info.value.category == "timeout"
+        assert time.monotonic() - started < 2.5
 
 
 def test_body_is_capped_at_one_byte_over_max(server):
