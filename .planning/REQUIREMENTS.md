@@ -15,12 +15,12 @@
 
 ### Collection
 
-- [ ] **COLL-01**: Poller fetches all devices in one Shelly Cloud request per interval (default 60 s, jittered, configurable) and never exceeds 1 request/second
+- [x] **COLL-01**: Poller fetches all devices in one Shelly Cloud request per interval (default 60 s, jittered, configurable) and never exceeds 1 request/second
 - [ ] **COLL-02**: Poller backs off exponentially on errors (capped), honours HTTP 429 / Retry-After, and treats a rejected auth key as a distinct state
 - [ ] **COLL-03**: A new reading row is stored only when a device's report timestamp advanced (or values changed when no reliable timestamp exists); implausible timestamps are rejected and counted, never silently dropped
-- [ ] **COLL-04**: Readings are stored raw and uncalibrated (T, RH, battery, flood flag) with the source of their timestamp; sensor-error nulls are never coerced to 0
-- [ ] **COLL-05**: Every poll attempt (Shelly and weather) is logged with outcome category, HTTP status and device count, so every gap in data is explainable
-- [ ] **COLL-06**: The raw status JSON is retained alongside each stored reading so readings can be re-derived later
+- [x] **COLL-04**: Readings are stored raw and uncalibrated (T, RH, battery, flood flag) with the source of their timestamp; sensor-error nulls are never coerced to 0
+- [x] **COLL-05**: Every poll attempt (Shelly and weather) is logged with outcome category, HTTP status and device count, so every gap in data is explainable
+- [x] **COLL-06**: The raw status JSON is retained alongside each stored reading so readings can be re-derived later
 - [ ] **COLL-07**: The Shelly auth key never appears in logs, error text, the database, or any public output
 - [ ] **COLL-08**: Device inventory (id, name, group, model, offsets, silence threshold) is read from a server-side `devices.toml`; only an example file is in the public repo
 
@@ -104,12 +104,12 @@
 | PROBE-03 | Phase 1 | Pending |
 | PROBE-04 | Phase 1 | Pending |
 | PROBE-05 | Phase 1 | Pending |
-| COLL-01 | Phase 1 | Pending |
+| COLL-01 | Phase 1 | Complete |
 | COLL-02 | Phase 1 | Pending |
 | COLL-03 | Phase 1 | Pending |
-| COLL-04 | Phase 1 | Pending |
-| COLL-05 | Phase 1 | Pending |
-| COLL-06 | Phase 1 | Pending |
+| COLL-04 | Phase 1 | Complete |
+| COLL-05 | Phase 1 | Complete |
+| COLL-06 | Phase 1 | Complete |
 | COLL-07 | Phase 1 | Pending |
 | COLL-08 | Phase 1 | Pending |
 | WX-01 | Phase 3 | Pending |
