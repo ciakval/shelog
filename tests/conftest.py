@@ -142,3 +142,11 @@ def _no_real_alerts(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(
         alerts, "load_alert_settings", lambda *a, **k: alerts.AlertSettings(None, None, None)
     )
+
+
+@pytest.fixture(autouse=True)
+def _no_real_weather(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Tests never fetch real weather (no coordinates)."""
+    from shelog import weather
+
+    monkeypatch.setattr(weather, "load_location", lambda *a, **k: None)
