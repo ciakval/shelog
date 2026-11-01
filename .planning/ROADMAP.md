@@ -12,7 +12,7 @@ shelog's value is a complete climate history, and every day without logging is l
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Probe & Core Collector** - Find out what Shelly Cloud really returns, then build a collector that stores deduplicated, raw, correctly timestamped readings
+- [x] **Phase 1: Probe & Core Collector** - Find out what Shelly Cloud really returns, then build a collector that stores deduplicated, raw, correctly timestamped readings (completed 2026-11-01)
 - [ ] **Phase 2: Collection Live on Bombur** - The poller runs unattended in production with durable data, daily backups, a health endpoint and ntfy alerts
 - [ ] **Phase 3: Outdoor Weather** - Hourly Open-Meteo weather and soil data for the flat's location is logged and backfilled to the start of the indoor record
 - [ ] **Phase 4: Metrics & Read API** - Calibrated, derived (dew point, absolute humidity, EMC) and step-correct resampled history is served as public JSON
@@ -29,7 +29,7 @@ Decimal phases appear between their surrounding integers in numeric order.
   2. For each model, a document records which field holds the real report time (`ts_source`, with its timezone meaning) and each device's reporting settings (wake period, thresholds, any on-device offset). Each device in `devices.toml` has a silence threshold based on those settings, and only `devices.example.toml` is in the repo.
   3. After running locally against the real account for at least an hour, the poller has sent one batched request per interval and never more than 1 request per second. The database holds a new row only when a device's report time moved forward, with raw uncalibrated T, RH, battery and flood values, sensor-error nulls kept as null, and the raw JSON saved alongside. Implausible timestamps were rejected and counted.
   4. A wrong key, a simulated HTTP 429 with Retry-After, and a network outage each cause capped backoff and a poll-log row with an outcome category. A wrong key also shows up as a separate "auth rejected" state. A search of the logs, error text and database finds no trace of the auth key.
-**Plans**: 8/8 plans executed
+**Plans**: 8/8 plans complete
 
 Plans:
 - [x] 01-01-PLAN.md: Tracer. Scaffold (Python 3.13, uv, zero runtime deps), config, rate-guarded client and a live `shelog probe` baseline run from git worktrees via `scripts/live.sh` (wave 1)
@@ -112,7 +112,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Probe & Core Collector | 8/8 | In Progress | - |
+| 1. Probe & Core Collector | 8/8 | Complete    | 2026-11-01 |
 | 2. Collection Live on Bombur | 0/TBD | Not started | - |
 | 3. Outdoor Weather | 0/TBD | Not started | - |
 | 4. Metrics & Read API | 0/TBD | Not started | - |
