@@ -55,15 +55,16 @@ Plans:
   3. `https://shelog.remesh.cz/api/health` is served by the `web` service, which has no Shelly key in its environment. It reads the live database while the poller writes and reports last successful poll, silent devices and auth state as coarse status only, with no error text, device IDs or coordinates.
   4. The owner gets an ntfy push when polling has failed for more than an hour, right away when the auth key is rejected, when a device is silent past its own threshold, and when a battery is low, plus a recovery push when each one clears. This is checked by forcing at least the auth-rejected and recovery cases.
   5. `DEPLOYMENT.md` and the README let the owner set up, deploy, add a device, read logs, roll back and restore a backup without reading the code.
-**Plans**: 6 plans
+**Plans**: 7 plans
 
 Plans:
 - [ ] 02-01-PLAN.md: Tracer. Key-free `shelog serve` with `/healthz` + `/api/health` from the poller's DB, packaged as `poller` + `web` from one image (Dockerfile, compose.yaml, local two-container smoke), hardened health body, umask and exception handler (wave 1)
-- [ ] 02-02-PLAN.md: CI with a test gate, the complete server `.env.example` (SET_ME placeholders, uid 1002), 1.1 s start delay and private data files (wave 1)
-- [ ] 02-03-PLAN.md: Pre-flight, owner onboarding checkpoint, first production deploy confirmed via the public endpoint, local poller stopped (wave 2)
+- [ ] 02-02-PLAN.md: CI with a test gate, the complete server `.env.example` (SET_ME placeholders, uid 1002), 1.1 s start delay, `where()` in a leaf module, private data files, acceptance report fixed for closed WAL DBs with gap listing (wave 1)
+- [ ] 02-03-PLAN.md: Pre-flight, owner onboarding checkpoint, local poller stopped, then push and first production deploy confirmed via the public endpoint (wave 2)
 - [ ] 02-04-PLAN.md: Verified snapshots (`shelog backup --out/--verify`) and idempotent `shelog import` of the local history (wave 2)
 - [ ] 02-05-PLAN.md: ntfy alerts with recoveries (auth rejected, poll failing, device silent, battery low), healthchecks.io dead-man ping, daily backup in poller housekeeping, `shelog alert-drill` (wave 3)
-- [ ] 02-06-PLAN.md: DEPLOYMENT.md/README, final redeploy, owner production checks (import, alert drill, restart, reboot, backup) and phase acceptance (wave 4)
+- [ ] 02-06-PLAN.md: DEPLOYMENT.md/README, CLAUDE.md files aligned with the as-built stack, restore rehearsal on a scratch copy, local export, final redeploy (wave 4)
+- [ ] 02-07-PLAN.md: Owner production checks (import, alert drill, restart, reboot, backup) and phase acceptance; the phase stays open until a VPS reboot is observed (wave 5)
 **Owner action required**:
   - Create the public GitHub repo `ciakval/shelog` and push. No remote exists yet.
   - Protect `main`, at least against force-push and deletion. The `production` environment only accepts protected branches.

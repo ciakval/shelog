@@ -457,14 +457,19 @@ HEALTHCHECK_PING_URL=
 | A7 | GHCR package visibility is handled by the token piped by `bombur-deploy` (private package pull works per the skill doc); not exercised here | Onboarding | First deploy fails at `pull`; fix is package visibility or `docker login` |
 | A8 | ntfy.sh public rate limits are not verified (alert volume is a few messages a day) | Pattern 6 | Negligible |
 
-## Open Questions
+## Open Questions (RESOLVED)
+
+All three were resolved by orchestrator decisions at planning time (2026-11-01). The plans implement the resolutions.
 
 1. **Does the owner accept `httpx2` as a dev-group dependency for `TestClient`?**
    - Known: TestClient hard-requires it. Alternative is an ASGI-call helper or a uvicorn-thread + urllib e2e test.
    - Recommendation: dev-group `httpx2`, with a `checkpoint:human-verify` since it is flagged SUS (young package); fall back to the no-dependency route if declined.
+   - **RESOLVED (orchestrator decision 1): no httpx2, not even dev-only.** Web tests run a real `shelog serve` (uvicorn) subprocess on a loopback port and query it with urllib; runtime dependencies are only starlette + uvicorn (no `[standard]`). See 02-01-PLAN.md.
 2. **Silence thresholds from observed gaps (docs/shelly-api.md says recompute in Phase 2).**
    - Recommendation: ship alerts with the current `max_silence_s`; add a small `scripts/` helper (aggregate output, names only) after ~3 days of production data; not a wave-1 blocker.
+   - **RESOLVED (orchestrator decision 2): keep the current per-device `max_silence_s` (model defaults 54000 / 9000 s).** Re-tuning from observed gaps is a later follow-up, not part of Phase 2. See 02-05-PLAN.md.
 3. **Should `health.evaluate` also drive the dead-man's switch semantics?** Keep ping tied to a successful cycle (D-12); revisit only if the owner finds the duplicate alert during Shelly outages annoying.
+   - **RESOLVED (orchestrator decision 3): ping only after successful cycles** (at most once per 5 min). DEPLOYMENT.md tells the owner to set the healthchecks.io grace (period 10 min, grace 60 min) so one transient Shelly outage does not page twice. See 02-05-PLAN.md and 02-06-PLAN.md.
 
 ## Environment Availability
 
