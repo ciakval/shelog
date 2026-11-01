@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Subfloor Climate Log</title>
+<meta name="description" content="Temperature, humidity and wood moisture of a drying subfloor, logged from Shelly sensors.">
+<link rel="stylesheet" href="vendor/uplot-1.6.32/uPlot.min.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="top">
+  <div>
+    <h1>Subfloor climate log</h1>
+    <p class="sub">Is the slab dry enough for a wooden floor? Sensors on the exposed subfloor vs. rooms that still have wood.</p>
+  </div>
+  <div id="health" class="health" aria-live="polite">…</div>
+</header>
+<div id="banner" class="banner" hidden></div>
+
+<section class="controls" aria-label="Controls">
+  <div class="row" role="group" aria-label="Time range">
+    <span class="lbl">Range</span>
+    <button data-range="86400">24 h</button>
+    <button data-range="259200">3 d</button>
+    <button data-range="604800">7 d</button>
+    <button data-range="2592000">30 d</button>
+    <button data-range="all">All</button>
+    <label class="custom">from <input type="datetime-local" id="from"></label>
+    <label class="custom">to <input type="datetime-local" id="to"></label>
+    <button id="apply">Apply</button>
+  </div>
+  <div class="row">
+    <span class="lbl">Detail</span>
+    <select id="resample" aria-label="Resampling">
+      <option value="auto">auto</option>
+      <option value="none">every report</option>
+      <option value="5m">5 min</option>
+      <option value="15m">15 min</option>
+      <option value="1h">1 hour</option>
+    </select>
+    <span class="lbl">RH band</span>
+    <input type="number" id="band_lo" value="40" min="0" max="100" aria-label="RH band low"> –
+    <input type="number" id="band_hi" value="60" min="0" max="100" aria-label="RH band high"> %
+    <a id="csv" class="csv" href="#">CSV</a>
+  </div>
+  <div class="row" id="devices" aria-label="Devices"></div>
+  <p class="hint">Drag across a chart to zoom into that range; double-click to go back. Times are Europe/Prague.</p>
+</section>
+
+<main>
+  <h2>Indoor</h2>
+  <div id="indoor" class="charts"></div>
+  <h2>Statistics <span class="range-label" id="range-label"></span></h2>
+  <div class="table-wrap"><table id="stats"></table></div>
+  <h2>Outdoor <span class="model-note">model data for the area, not measured at the flat</span></h2>
+  <div id="outdoor" class="charts"></div>
+</main>
+
+<footer>
+  <p><a href="https://open-meteo.com/">Weather data by Open-Meteo.com</a> (CC BY 4.0).
+  EMC: Hailwood–Horrobin (USDA Wood Handbook). Lines are steps: each reading holds until the next report; gaps mean the sensor was silent past its threshold or the logger was down.</p>
+</footer>
+<script src="vendor/uplot-1.6.32/uPlot.iife.min.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

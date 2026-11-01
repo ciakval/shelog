@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Status
 
-Phase 1 (probe and core collector) is built: `shelog poll` runs locally against the real account and stores deduplicated, raw readings from all seven sensors in SQLite, with every attempt explained in `poll_log`. Phase 2 (deploy the poller on the VPS) is next, per `.planning/ROADMAP.md`. The web service, resampling, derived metrics, alerts and UI are not built yet: their design is in `SPEC.md` and `.planning/ROADMAP.md`, and will be described here once they exist.
+All five roadmap phases are built and `main` deploys to Bombur (`https://shelog.remesh.cz`): the `poller` service collects Shelly readings, hourly Open-Meteo weather (off until `SHELOG_LAT`/`SHELOG_LON` are set), sends ntfy alerts and writes daily snapshots; the key-free `web` service serves the JSON API and the uPlot page. GSD is no longer used for this project (owner decision 2026-11-01): work directly, tests + commit per step. Operations: `DEPLOYMENT.md`.
 
 ## Secrets and live credentials
 
@@ -40,6 +40,8 @@ Configuration comes from the secrets file and `SHELLY_*` / `SHELOG_*` environmen
 - `shelly/transport` (the only socket code), `shelly/client` (rate guard, outcome categories, `all_status` call), `shelly/parse` (per-model parsers).
 - `store` - dedup decision and the one-transaction cycle writer; `poller` - poll cycle, run loop, backoff, auth state; `lock` - single-instance lock shared by poll and probe.
 - `probe` - live API checks with a raw dump to `data/probe/`; `sanitize` - the only way fixtures are produced; `check` - key leak scan.
+- `alerts` (ntfy transitions via `alert_state`, healthchecks ping), `backup` (verified snapshots, daily rotation), `importer` (idempotent DB merge), `weather` (Open-Meteo upsert into `outdoor`): alerts, daily backup and weather run as poller housekeeping hooks every 5 min and never raise into the poll loop.
+- `metrics` (dew point, absolute humidity, EMC; pure), `series` (calibration at read time, forward-fill grid with breaks, min/max downsampling, time-weighted stats), `api` (JSON bodies, names only), `web` (Starlette app for the serve subcommand; never loads the Shelly key), `static/` (page + vendored uPlot).
 - `scripts/live.sh`, `scripts/collection_report.py`. Tests are offline: `tests/conftest.py` provides `FakeClock`, `FakeSend`, a sentinel key and a temporary DB.
 
 ## Architecture as built

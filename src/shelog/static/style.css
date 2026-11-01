@@ -1,0 +1,86 @@
+:root {
+  --bg: #f7f7f5;
+  --panel: #ffffff;
+  --ink: #1d1f21;
+  --muted: #62666b;
+  --line: #dcdcd7;
+  --accent: #2f6fdf;
+  --ok: #1f8a4c;
+  --warn: #b7791f;
+  --bad: #c0392b;
+  --band: rgba(47, 111, 223, 0.08);
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #15171a;
+    --panel: #1d2024;
+    --ink: #e6e6e3;
+    --muted: #9aa0a6;
+    --line: #33373c;
+    --accent: #7aa7ff;
+    --ok: #4cc081;
+    --warn: #e0a84a;
+    --bad: #ff6b5b;
+    --band: rgba(122, 167, 255, 0.10);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #15171a; --panel: #1d2024; --ink: #e6e6e3; --muted: #9aa0a6; --line: #33373c;
+  --accent: #7aa7ff; --ok: #4cc081; --warn: #e0a84a; --bad: #ff6b5b;
+  --band: rgba(122, 167, 255, 0.10); color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--bg); color: var(--ink);
+  font: 15px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+.top, .controls, main, footer, .banner { max-width: 1200px; margin: 0 auto; padding: 0 16px; }
+.top { display: flex; gap: 16px; justify-content: space-between; align-items: flex-start; padding-top: 20px; flex-wrap: wrap; }
+h1 { font-size: 1.5rem; margin: 0; letter-spacing: -0.01em; }
+h2 { font-size: 1.1rem; margin: 28px 0 8px; }
+.sub { margin: 4px 0 0; color: var(--muted); }
+.health { border: 1px solid var(--line); background: var(--panel); border-radius: 8px; padding: 8px 12px; font-size: 0.9rem; min-width: 220px; }
+.health .dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 6px; vertical-align: middle; }
+.health .silent { color: var(--warn); }
+.banner { margin-top: 12px; }
+.banner > div { background: var(--bad); color: #fff; padding: 10px 14px; border-radius: 8px; font-weight: 600; }
+
+.controls { margin-top: 16px; }
+.row { display: flex; flex-wrap: wrap; gap: 6px 8px; align-items: center; margin: 8px 0; }
+.lbl { color: var(--muted); font-size: 0.85rem; min-width: 48px; }
+button, select, input {
+  font: inherit; font-size: 0.9rem; color: var(--ink); background: var(--panel);
+  border: 1px solid var(--line); border-radius: 6px; padding: 4px 10px;
+}
+button { cursor: pointer; }
+button.on { background: var(--accent); border-color: var(--accent); color: #fff; }
+input[type="number"] { width: 4.2em; padding: 4px 6px; }
+.custom { color: var(--muted); font-size: 0.85rem; display: inline-flex; gap: 4px; align-items: center; }
+.csv { margin-left: auto; color: var(--accent); }
+.hint { color: var(--muted); font-size: 0.8rem; margin: 4px 0 0; }
+.group { display: inline-flex; flex-wrap: wrap; gap: 4px 10px; align-items: center; border: 1px solid var(--line); border-radius: 8px; padding: 4px 10px; background: var(--panel); }
+.group > button { padding: 2px 8px; font-size: 0.8rem; }
+.dev { display: inline-flex; gap: 5px; align-items: center; font-size: 0.9rem; cursor: pointer; }
+.swatch { width: 14px; height: 3px; border-radius: 2px; display: inline-block; }
+.swatch.dashed { background: none !important; border-top: 3px dashed; height: 0; }
+
+.charts { display: grid; gap: 12px; }
+.chart { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 8px 4px 4px; overflow: hidden; }
+.chart h3 { margin: 0 8px 2px; font-size: 0.95rem; font-weight: 600; }
+.chart .empty { color: var(--muted); padding: 24px 12px; font-size: 0.9rem; }
+.u-legend { font-size: 0.8rem; }
+.u-select { background: var(--band); }
+.model-note, .range-label { font-weight: 400; color: var(--muted); font-size: 0.85rem; }
+
+.table-wrap { overflow-x: auto; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; }
+table { border-collapse: collapse; width: 100%; font-size: 0.85rem; font-variant-numeric: tabular-nums; }
+th, td { padding: 6px 10px; text-align: right; border-bottom: 1px solid var(--line); white-space: nowrap; }
+th:first-child, td:first-child, th:nth-child(2), td:nth-child(2) { text-align: left; }
+thead th { color: var(--muted); font-weight: 600; }
+tbody tr:last-child td { border-bottom: 0; }
+
+footer { color: var(--muted); font-size: 0.8rem; margin: 32px auto 40px; }
+footer a { color: var(--accent); }
