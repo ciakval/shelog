@@ -1,0 +1,30 @@
+{
+  "isok": true,
+  "data": {
+    "devices_status": {
+      "020000000001": {
+        "_updated": "2026-11-01 06:50:00",
+        "tmp": {"value": 21.5, "units": "C", "tC": 21.5, "tF": 70.7, "is_valid": true},
+        "hum": {"value": 48.5, "is_valid": true},
+        "bat": {"value": 97, "voltage": 3.0}
+      },
+      "020000000002": {
+        "_updated": "2026-11-01 06:40:00",
+        "temperature:0": {"id": 0, "tC": 20.3, "tF": 68.5},
+        "humidity:0": {"id": 0, "rh": 55.2},
+        "devicepower:0": {"id": 0, "battery": {"V": 6.0, "percent": 88}}
+      },
+      "020000000003": {
+        "_updated": "2026-11-01 06:30:00",
+        "flood": false,
+        "tmp": {"value": 19.0, "units": "C", "tC": 19.0, "tF": 66.2, "is_valid": true},
+        "bat": {"value": 100, "voltage": 3.0}
+      },
+      "0200000000ff": {
+        "_updated": "2026-11-01 06:20:00",
+        "tmp": {"tC": 18.0, "is_valid": true},
+        "hum": {"value": 40, "is_valid": true}
+      }
+    }
+  }
+}

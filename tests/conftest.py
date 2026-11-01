@@ -2,8 +2,10 @@
 
 from __future__ import annotations
 
+import json
+import sqlite3
 import threading
-from collections.abc import Mapping
+from collections.abc import Callable, Iterator, Mapping
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from pathlib import Path
@@ -12,10 +14,12 @@ from typing import Any
 import pytest
 
 from shelog.config import Device, Secret, Settings
+from shelog.db import connect_rw, migrate
 from shelog.shelly.transport import RawResponse
 
 SENTINEL_KEY = "SENTINEL-KEY-0123456789abcdef"
 TEST_HOST = "shelly-00-eu.shelly.cloud"
+FIXTURES = Path(__file__).parent / "fixtures" / "shelly"
 START_EPOCH = datetime(2026, 11, 1, 7, 0, 0, tzinfo=UTC).timestamp()
 
 
@@ -112,3 +116,19 @@ def test_devices() -> tuple[Device, ...]:
         Device(id="020000000002", name="T-HT3", group="reference", model="ht_gen3"),
         Device(id="020000000003", name="T-FLOOD", group="subfloor", model="flood_gen1"),
     )
+
+
+@pytest.fixture
+def tmp_db(tmp_path: Path) -> Iterator[sqlite3.Connection]:
+    con = connect_rw(tmp_path / "data" / "shelog.db")
+    migrate(con)
+    yield con
+    con.close()
+
+
+@pytest.fixture
+def envelope() -> Callable[[str], Any]:
+    def load(name: str) -> Any:
+        return json.loads((FIXTURES / name).read_text(encoding="utf-8"))
+
+    return load
