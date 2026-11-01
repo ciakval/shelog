@@ -22,6 +22,7 @@ from starlette.responses import JSONResponse, PlainTextResponse, Response
 from starlette.routing import Mount, Route
 from starlette.staticfiles import StaticFiles
 
+from shelog import api
 from shelog.config import Device
 
 log = logging.getLogger(__name__)
@@ -129,6 +130,32 @@ def create_app(
         body = _with_db(lambda con: health(con, devices, int(now())))
         return JSONResponse(body, headers=CACHE)
 
+    def _api(build: Callable[[sqlite3.Connection | None, dict[str, str]], Any]):
+        def endpoint(request: Request) -> Response:
+            params = dict(request.query_params)
+            try:
+                body = _with_db(lambda con: build(con, params))
+            except api.BadRequest as err:
+                return JSONResponse({"error": err.args[0]}, status_code=400)
+            return JSONResponse(body, headers=CACHE)
+
+        return endpoint
+
+    def api_devices(request: Request) -> Response:
+        return JSONResponse(api.devices_body(devices), headers=CACHE)
+
+    def export_csv(request: Request) -> Response:
+        params = dict(request.query_params)
+        try:
+            body = _with_db(lambda con: api.readings_body(con, devices, params, int(now())))
+        except api.BadRequest as err:
+            return JSONResponse({"error": err.args[0]}, status_code=400)
+        return Response(
+            api.readings_csv(body),
+            media_type="text/csv",
+            headers={**CACHE, "Content-Disposition": 'attachment; filename="shelog.csv"'},
+        )
+
     async def on_error(request: Request, exc: Exception) -> Response:
         log.error("request failed: %s", type(exc).__name__)
         return JSONResponse({"error": "internal"}, status_code=500)
@@ -136,6 +163,11 @@ def create_app(
     routes: list[Any] = [
         Route("/healthz", healthz),
         Route("/api/health", api_health),
+        Route("/api/devices", api_devices),
+        Route("/api/readings", _api(lambda c, p: api.readings_body(c, devices, p, int(now())))),
+        Route("/api/stats", _api(lambda c, p: api.stats_body(c, devices, p, int(now())))),
+        Route("/api/outdoor", _api(lambda c, p: api.outdoor_body(c, p, int(now())))),
+        Route("/api/export.csv", export_csv),
         *(extra_routes or []),
     ]
     if STATIC_DIR.is_dir():
