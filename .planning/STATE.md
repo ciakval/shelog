@@ -2,17 +2,17 @@
 gsd_state_version: "1.0"
 current_phase: 01
 current_phase_name: Probe & Core Collector
-status: executing
-stopped_at: Completed 01-07-PLAN.md
-last_updated: "2026-11-01T07:44:33.189Z"
+status: verifying
+stopped_at: Completed 01-08-PLAN.md
+last_updated: "2026-11-01T09:04:49.707Z"
 last_activity: 2026-11-01
 last_activity_desc: Phase 01 execution started
-state_head: c41deac2909e02eee1b93422e3c05652b5629f32
+state_head: c2ad692a24c408e53371ca0d46a2c6cf0660a94f
 progress:
   total_phases: 5
   completed_phases: 0
   total_plans: 8
-  completed_plans: 7
+  completed_plans: 8
   percent: 0
 ---
 
@@ -29,7 +29,7 @@ See: .planning/PROJECT.md (updated 2026-10-31)
 
 Phase: 01 (Probe & Core Collector) — EXECUTING
 Plan: 8 of 8
-Status: Ready to execute
+Status: Phase complete — ready for verification
 Last activity: 2026-11-01 — Phase 01 execution started
 
 Progress: [░░░░░░░░░░] 0%
@@ -63,6 +63,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 01 P05 | 25 min | 2 tasks | 8 files |
 | Phase 01 P06 | 30 min | 2 tasks | 6 files |
 | Phase 01 P07 | 70min | 2 tasks | 12 files |
+| Phase 01 P08 | 100min | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -90,6 +91,7 @@ Recent decisions affecting current work:
 - [Phase 01]: 01-07: AUTH_CONFIRMATIONS stays 2 (no live throttle evidence; wrong host answers like a wrong key, HTTP 401)
 - [Phase 01]: 01-07: v2 works with _updated for all models but no v2 poll path kept; v1 all_status stays primary
 - [Phase 01]: 01-07: sanitizer redacts DeviceInfo.key, coordinates, _gip_s and regional cloud host; scan flags leftovers
+- [Phase 01]: 01-08: collection_report is aggregate-only and read-only; empty windows fail; duplicate check spans sources
 
 ### Pending Todos
 
@@ -113,6 +115,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-11-01T07:44:33.156Z
-Stopped at: Completed 01-07-PLAN.md
+Last session: 2026-11-01T09:04:49.675Z
+Stopped at: Completed 01-08-PLAN.md
 Resume file: None
