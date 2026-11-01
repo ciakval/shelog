@@ -6,6 +6,7 @@ never propagated (``raise ... from None``).
 
 from __future__ import annotations
 
+import http.client
 import json
 import threading
 import time
@@ -83,7 +84,8 @@ def _send_blocking(req: urllib.request.Request, timeout: float, deadline: float)
         if isinstance(err.reason, TimeoutError):
             raise TransportError("timeout") from None
         raise TransportError("network") from None
-    except OSError:
+    except (OSError, http.client.HTTPException):
+        # BadStatusLine, IncompleteRead, LineTooLong...: not OSError, but still a network fault
         raise TransportError("network") from None
 
 

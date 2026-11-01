@@ -56,6 +56,10 @@ class _Handler(BaseHTTPRequestHandler):
                 except OSError:
                     return
                 time.sleep(0.3)
+        elif self.path == "/garbage":
+            self.wfile.write(b"this is not http\r\n\r\n")
+            self.wfile.flush()
+            self.close_connection = True
         elif self.path == "/big":
             payload = b"a" * (MAX_BODY + 100)
             self.send_response(200)
@@ -143,6 +147,13 @@ def test_timeout_bounds_a_connection_that_never_answers():
             send(f"http://127.0.0.1:{port}/x", form={"auth_key": SENTINEL_KEY}, timeout=0.7)
         assert info.value.category == "timeout"
         assert time.monotonic() - started < 2.5
+
+
+def test_malformed_http_maps_to_network_not_an_escaping_exception(server):
+    with pytest.raises(TransportError) as info:
+        send(_url(server, "/garbage"), form={"auth_key": SENTINEL_KEY}, timeout=5)
+    assert info.value.category == "network"
+    assert SENTINEL_KEY not in repr(info.value)
 
 
 def test_body_is_capped_at_one_byte_over_max(server):
