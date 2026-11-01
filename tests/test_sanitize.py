@@ -224,3 +224,27 @@ def test_device_info_key_is_redacted_not_allow_listed():
     assert "fixture-device-key" in text
     assert '"key": "kept"' in text
     assert scan(text) == []
+
+
+def test_home_coordinates_and_geo_label_are_redacted_and_scanned():
+    doc = {
+        "settings": {"lat": 50.0471, "lng": 14.4523, "_gip_s": "SomeTown"},
+        "sys": {"location": {"lat": 49.2, "lon": 16.6, "tz": "Europe/Prague"}},
+    }
+    raw = json.dumps(doc)
+    assert {"coordinate_not_redacted at $.settings.lat"} <= set(scan(raw))
+    assert any(f.startswith("region_label_not_redacted") for f in scan(raw))
+    text = sanitize_docs([doc])[0]
+    for original in ("50.0471", "14.4523", "49.2", "16.6", "SomeTown"):
+        assert original not in text
+    assert "Europe/Prague" in text
+    assert scan(text) == []
+
+
+def test_regional_cloud_hostnames_are_redacted_and_scanned():
+    doc = {"ws": {"server": "shelly-123-eu.shelly.cloud:6022/jrpc"}}
+    assert any(f.startswith("cloud_host_not_redacted") for f in scan(json.dumps(doc)))
+    text = sanitize_docs([doc])[0]
+    assert "123" not in text
+    assert "shelly-000-xx.shelly.cloud:6022/jrpc" in text
+    assert scan(text) == []

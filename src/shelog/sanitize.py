@@ -223,26 +223,41 @@ def apply(text: str, mapping: Mapping[str, str]) -> str:
 
 
 DEVICE_KEY_PLACEHOLDER = "fixture-device-key"
+REGION_PLACEHOLDER = "fixture-region"
+COORDINATE_KEYS = frozenset({"lat", "lng", "lon", "latitude", "longitude"})
+REGION_KEYS = frozenset({"_gip_s"})
+CLOUD_HOST_PLACEHOLDER = "shelly-000-xx.shelly.cloud"
+_CLOUD_HOST = re.compile(r"shelly-\d{2,3}-[a-z0-9]+\.shelly\.cloud", re.IGNORECASE)
 
 
-def _redact_device_keys(node: Any, parent_key: str | None = None) -> Any:
-    """Replace every `DeviceInfo.key` value (a Gen3 per-device signed token) with a placeholder.
+def _redact_fields(node: Any, parent_key: str | None = None) -> Any:
+    """Blank the fields the id mapping cannot pseudonymize.
 
-    The v2 settings of a Gen3 device carry `DeviceInfo.key`, a long dotted token tied to the
-    device. It is not an id the mapping can pseudonymize, and it must not be allow-listed in
-    KNOWN_TOKENS (that would commit it), so the sanitizer drops the value itself.
+    - `DeviceInfo.key`: a Gen3 per-device dotted token. It must not be allow-listed in
+      KNOWN_TOKENS (that would commit it), so the value is replaced.
+    - `lat`/`lng`/`lon`/`latitude`/`longitude`: the owner's home coordinates (Gen1 settings
+      and Gen3 `sys.location`), replaced by 0.
+    - `_gip_s`: the geo-IP city/region label, replaced by a placeholder.
+    - regional cloud hostnames (`shelly-NNN-<region>.shelly.cloud`) inside any string: the
+      account's server assignment, replaced by a placeholder host.
     """
     if isinstance(node, dict):
-        return {
-            key: (
-                DEVICE_KEY_PLACEHOLDER
-                if parent_key == "DeviceInfo" and key == "key" and isinstance(value, str)
-                else _redact_device_keys(value, key if isinstance(key, str) else None)
-            )
-            for key, value in node.items()
-        }
+        out: dict[Any, Any] = {}
+        for key, value in node.items():
+            name = key if isinstance(key, str) else None
+            if parent_key == "DeviceInfo" and name == "key" and isinstance(value, str):
+                out[key] = DEVICE_KEY_PLACEHOLDER
+            elif name in COORDINATE_KEYS and isinstance(value, int | float):
+                out[key] = 0
+            elif name in REGION_KEYS and isinstance(value, str):
+                out[key] = REGION_PLACEHOLDER
+            else:
+                out[key] = _redact_fields(value, name)
+        return out
     if isinstance(node, list):
-        return [_redact_device_keys(item, parent_key) for item in node]
+        return [_redact_fields(item, parent_key) for item in node]
+    if isinstance(node, str):
+        return _CLOUD_HOST.sub(CLOUD_HOST_PLACEHOLDER, node)
     return node
 
 
@@ -251,8 +266,7 @@ def sanitize_docs(docs: Sequence[Any], extra_ids: Iterable[str] = ()) -> list[st
     mapping = build_mapping(docs, extra_ids)
     return [
         apply(
-            json.dumps(_redact_device_keys(doc), sort_keys=True, indent=2, ensure_ascii=False)
-            + "\n",
+            json.dumps(_redact_fields(doc), sort_keys=True, indent=2, ensure_ascii=False) + "\n",
             mapping,
         )
         for doc in docs
@@ -336,9 +350,17 @@ def scan(text: str, allowed_ids: Collection[str] | None = None) -> list[str]:
         elif isinstance(node, list):
             for index, item in enumerate(node):
                 walk(item, f"{path}[{index}]", key)
+        elif isinstance(node, int | float) and not isinstance(node, bool):
+            if key in COORDINATE_KEYS and node != 0:
+                findings.append(f"coordinate_not_redacted at {path}")
         elif isinstance(node, str):
             for rule, offset in _value_findings(node, check_long=True):
                 findings.append(f"{rule} at {path} char {offset}")
+            for host in _CLOUD_HOST.finditer(node):
+                if host.group(0).lower() != CLOUD_HOST_PLACEHOLDER:
+                    findings.append(f"cloud_host_not_redacted at {path} char {host.start()}")
+            if key in REGION_KEYS and node != REGION_PLACEHOLDER:
+                findings.append(f"region_label_not_redacted at {path}")
             if key == "ssid" and node and not node.startswith("fixture-ssid-"):
                 findings.append(f"ssid_not_pseudo at {path}")
             if (
