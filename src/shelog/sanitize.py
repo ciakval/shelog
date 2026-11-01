@@ -222,11 +222,39 @@ def apply(text: str, mapping: Mapping[str, str]) -> str:
     return pattern.sub(replace, text)
 
 
+DEVICE_KEY_PLACEHOLDER = "fixture-device-key"
+
+
+def _redact_device_keys(node: Any, parent_key: str | None = None) -> Any:
+    """Replace every `DeviceInfo.key` value (a Gen3 per-device signed token) with a placeholder.
+
+    The v2 settings of a Gen3 device carry `DeviceInfo.key`, a long dotted token tied to the
+    device. It is not an id the mapping can pseudonymize, and it must not be allow-listed in
+    KNOWN_TOKENS (that would commit it), so the sanitizer drops the value itself.
+    """
+    if isinstance(node, dict):
+        return {
+            key: (
+                DEVICE_KEY_PLACEHOLDER
+                if parent_key == "DeviceInfo" and key == "key" and isinstance(value, str)
+                else _redact_device_keys(value, key if isinstance(key, str) else None)
+            )
+            for key, value in node.items()
+        }
+    if isinstance(node, list):
+        return [_redact_device_keys(item, parent_key) for item in node]
+    return node
+
+
 def sanitize_docs(docs: Sequence[Any], extra_ids: Iterable[str] = ()) -> list[str]:
     """Serialize and sanitize all docs with ONE shared mapping. Deterministic."""
     mapping = build_mapping(docs, extra_ids)
     return [
-        apply(json.dumps(doc, sort_keys=True, indent=2, ensure_ascii=False) + "\n", mapping)
+        apply(
+            json.dumps(_redact_device_keys(doc), sort_keys=True, indent=2, ensure_ascii=False)
+            + "\n",
+            mapping,
+        )
         for doc in docs
     ]
 

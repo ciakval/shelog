@@ -214,3 +214,13 @@ def test_cli_refuses_and_writes_nothing_when_scan_finds_leftovers(tmp_path: Path
     out = tmp_path / "out"
     assert sanitize.main(["--devices-file", str(devices), str(out), str(raw)]) == 1
     assert not out.exists()
+
+
+def test_device_info_key_is_redacted_not_allow_listed():
+    token = "aaaa" * 10 + "." + "bbbb" * 12 + "." + "cccc" * 20
+    doc = [{"settings": {"DeviceInfo": {"key": token, "gen": 3}, "other": {"key": "kept"}}}]
+    text = sanitize_docs([doc])[0]
+    assert token not in text
+    assert "fixture-device-key" in text
+    assert '"key": "kept"' in text
+    assert scan(text) == []
