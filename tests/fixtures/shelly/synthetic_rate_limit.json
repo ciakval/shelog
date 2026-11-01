@@ -1,0 +1,35 @@
+{
+  "_note": "SYNTHETIC rate-limit envelopes, never captured live. Taken from research Pitfall 3 and community reports; the real Shelly Cloud throttle response is unverified and must not be provoked.",
+  "cases": {
+    "http_429_retry_after": {
+      "status": 429,
+      "headers": {
+        "retry-after": "7"
+      },
+      "body": {
+        "isok": false,
+        "errors": {
+          "max_req": "Request limit reached!"
+        }
+      },
+      "expected_category": "rate_limited"
+    },
+    "http_429_no_retry_after": {
+      "status": 429,
+      "headers": {},
+      "body": "",
+      "expected_category": "rate_limited"
+    },
+    "http_200_isok_false_max_req": {
+      "status": 200,
+      "headers": {},
+      "body": {
+        "isok": false,
+        "errors": {
+          "max_req": "Request limit reached!"
+        }
+      },
+      "expected_category": "rate_limited"
+    }
+  }
+}

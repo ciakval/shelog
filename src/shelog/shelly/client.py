@@ -54,6 +54,7 @@ class Outcome:
     latency_ms: int | None = None
     retry_after_s: float | None = None
     devices: Mapping[str, Any] | None = None
+    body_excerpt: str | None = None  # bad_response only; log-only, never stored
 
     @property
     def ok(self) -> bool:
@@ -96,6 +97,14 @@ def _safe_json(body: bytes) -> dict[str, Any] | None:
     return doc if isinstance(doc, dict) else None
 
 
+EXCERPT_CHARS = 200
+
+
+def _bad_response(raw: RawResponse) -> Outcome:
+    excerpt = raw.body[: EXCERPT_CHARS * 4].decode("utf-8", errors="replace")[:EXCERPT_CHARS]
+    return Outcome(BAD_RESPONSE, raw.status, body_excerpt=excerpt)
+
+
 def classify(raw: RawResponse, now: float) -> Outcome:
     """Map a raw response to a closed outcome category."""
     status = raw.status
@@ -111,18 +120,18 @@ def classify(raw: RawResponse, now: float) -> Outcome:
         return Outcome(HTTP_OTHER, status)
     doc = _safe_json(raw.body)
     if doc is None:
-        return Outcome(BAD_RESPONSE, status)
+        return _bad_response(raw)
     if doc.get("isok") is not True:
         errors = doc.get("errors")
         if isinstance(errors, dict) and "max_req" in errors:
             return Outcome(RATE_LIMITED, status)
-        return Outcome(BAD_RESPONSE, status)
+        return _bad_response(raw)
     data = doc.get("data")
     devices = data.get("devices_status") if isinstance(data, dict) else None
     if devices == {} or devices == []:
         return Outcome(NO_DEVICES, status)
     if not isinstance(devices, dict):
-        return Outcome(BAD_RESPONSE, status)
+        return _bad_response(raw)
     return Outcome(OK, status, devices=devices)
 
 
