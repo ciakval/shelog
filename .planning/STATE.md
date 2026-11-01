@@ -3,16 +3,16 @@ gsd_state_version: "1.0"
 current_phase: 01
 current_phase_name: Probe & Core Collector
 status: executing
-stopped_at: Completed 01-05-PLAN.md
-last_updated: "2026-11-01T07:26:49.510Z"
+stopped_at: Completed 01-06-PLAN.md
+last_updated: "2026-11-01T07:36:08.827Z"
 last_activity: 2026-11-01
 last_activity_desc: Phase 01 execution started
-state_head: 54e0c7bc8a3867e440c38969bee715c62b05a07b
+state_head: 9d8b12954ce908a243ccaee29bd2c6eb3e246939
 progress:
   total_phases: 5
   completed_phases: 0
   total_plans: 8
-  completed_plans: 5
+  completed_plans: 6
   percent: 0
 ---
 
@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-10-31)
 ## Current Position
 
 Phase: 01 (Probe & Core Collector) — EXECUTING
-Plan: 6 of 8
+Plan: 7 of 8
 Status: Ready to execute
 Last activity: 2026-11-01 — Phase 01 execution started
 
@@ -61,6 +61,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 01 P03 | 35 min | 2 tasks | 9 files |
 | Phase 1 P04 | 30 min | 2 tasks | 8 files |
 | Phase 01 P05 | 25 min | 2 tasks | 8 files |
+| Phase 01 P06 | 30 min | 2 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -83,6 +84,8 @@ Recent decisions affecting current work:
 - [Phase 1]: 01-04: Failure delay sequence for seed 1234 (60 s interval) is 59.0, 86.4, 120.9, 286.6, 290.9, 237.3 s; startup failures in loop mode sleep 30 s before exit 1
 - [Phase 01]: 01-05: ConfigError messages are value-free; cli prints err.args[0]; rh_offset forbidden on flood_gen1 even at 0.0
 - [Phase 01]: 01-05: RedactingFormatter redacts the fully formatted record (raw, quote, quote_plus forms); shelog check scans db/wal/shm and data/ and prints only counts and file names
+- [Phase 01]: 01-06: probe export refuses unless the v1_all_status capture is ok, so pseudonym numbering always matches the committed v1 fixture
+- [Phase 01]: 01-06: v2 list responses are classified by the v1-shaped classify() (bad_response); 01-07 decides whether v2 needs its own classification
 
 ### Pending Todos
 
@@ -106,6 +109,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-11-01T07:26:49.481Z
-Stopped at: Completed 01-05-PLAN.md
+Last session: 2026-11-01T07:36:08.792Z
+Stopped at: Completed 01-06-PLAN.md
 Resume file: None
