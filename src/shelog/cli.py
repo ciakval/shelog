@@ -1,29 +1,14 @@
-"""Command line entry point: `shelog probe` and `shelog poll [--once]`."""
+"""Command line entry point: `shelog probe`, `shelog poll [--once]` and `shelog check`."""
 
 from __future__ import annotations
 
 import argparse
-import logging
 import sys
-import time
 from collections.abc import Sequence
 
-from shelog import poller, probe
+from shelog import check, poller, probe
 from shelog.config import ConfigError, load_devices, load_settings
-
-
-def _configure_logging(level_name: str) -> None:
-    handler = logging.StreamHandler(sys.stderr)
-    formatter = logging.Formatter(
-        "%(asctime)s %(levelname)s %(name)s %(message)s", datefmt="%Y-%m-%dT%H:%M:%SZ"
-    )
-    formatter.converter = time.gmtime
-    handler.setFormatter(formatter)
-    root = logging.getLogger()
-    root.handlers[:] = [handler]
-    root.setLevel(getattr(logging, level_name, logging.INFO))
-    for noisy in ("httpx", "httpcore"):
-        logging.getLogger(noisy).setLevel(logging.WARNING)
+from shelog.logging_setup import setup_logging
 
 
 def _build_parser() -> argparse.ArgumentParser:
@@ -34,6 +19,9 @@ def _build_parser() -> argparse.ArgumentParser:
     )
     poll = sub.add_parser("poll", help="poll the Shelly Cloud and store readings in SQLite")
     poll.add_argument("--once", action="store_true", help="run a single cycle and exit")
+    sub.add_parser(
+        "check", help="scan local files for the auth key and summarize the configuration"
+    )
     return parser
 
 
@@ -43,11 +31,14 @@ def main(argv: Sequence[str] | None = None) -> int:
         settings = load_settings()
         devices = load_devices(settings.devices_file)
     except ConfigError as err:
-        print(f"config error: {err}", file=sys.stderr)
+        # ConfigError messages name variables or devices only, never values.
+        print(f"config error: {err.args[0]}", file=sys.stderr)
         return 2
-    _configure_logging(settings.log_level)
+    setup_logging(settings.log_level, [settings.auth_key.reveal()])
     if args.command == "probe":
         return probe.main(settings, devices)
+    if args.command == "check":
+        return check.main(settings, devices)
     if args.command == "poll":
         return poller.main(settings, devices, once=args.once)
     return 2  # unreachable: argparse enforces a known subcommand
