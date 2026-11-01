@@ -12,12 +12,21 @@ import pytest
 from conftest import SENTINEL_KEY, TEST_HOST, FakeClock, FakeSend
 
 from shelog.config import Device, Secret, Settings
-from shelog.probe import run_probe
+from shelog.probe import STEPS, run_probe
 from shelog.shelly.client import Interrupted, RateGuard, ShellyClient
 from shelog.shelly.transport import RawResponse, TransportError
 
-INDEX_KEYS = {"step", "http_status", "category", "retry_after_s", "latency_ms", "bytes"}
+INDEX_KEYS = {
+    "step",
+    "http_status",
+    "category",
+    "retry_after_s",
+    "latency_ms",
+    "bytes",
+    "key_placement",
+}
 UNCONFIGURED_ID = "0200000000ff"
+BASELINE = STEPS[:1]  # this file pins the first step only; test_probe.py covers the matrix
 
 
 def _stamp(value: float) -> str:
@@ -65,6 +74,7 @@ def test_raw_body_is_saved_verbatim_with_an_index(
         _client(test_settings, send, fake_clock),
         fake_clock,
         out_root=out_root,
+        steps=BASELINE,
     )
 
     run_dir = _only_run_dir(out_root)
@@ -85,6 +95,7 @@ def test_index_has_exactly_the_agreed_keys_and_no_identifiers(
         _client(test_settings, send, fake_clock),
         fake_clock,
         out_root=out_root,
+        steps=BASELINE,
     )
 
     text = (_only_run_dir(out_root) / "index.json").read_text()
@@ -105,6 +116,7 @@ def test_stdout_names_devices_only(test_settings, test_devices, fake_clock, tmp_
         _client(test_settings, send, fake_clock),
         fake_clock,
         out_root=tmp_path / "probe",
+        steps=BASELINE,
     )
 
     out = capsys.readouterr().out
@@ -129,6 +141,7 @@ def test_missing_configured_device_fails_the_probe(
         _client(test_settings, send, fake_clock),
         fake_clock,
         out_root=tmp_path / "probe",
+        steps=BASELINE,
     )
 
     out = capsys.readouterr().out
@@ -148,6 +161,7 @@ def test_transport_error_is_recorded_as_a_category(
         _client(test_settings, send, fake_clock),
         fake_clock,
         out_root=out_root,
+        steps=BASELINE,
     )
 
     run_dir = _only_run_dir(out_root)
@@ -168,6 +182,7 @@ def test_key_travels_only_in_the_form_body(test_settings, test_devices, fake_clo
         _client(test_settings, send, fake_clock),
         fake_clock,
         out_root=tmp_path / "probe",
+        steps=BASELINE,
     )
 
     (call,) = send.calls

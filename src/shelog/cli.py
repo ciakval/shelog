@@ -14,8 +14,18 @@ from shelog.logging_setup import setup_logging
 def _build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="shelog")
     sub = parser.add_subparsers(dest="command", required=True)
-    sub.add_parser(
-        "probe", help="query the Shelly Cloud once and summarize (raw dump to data/probe)"
+    probe_parser = sub.add_parser(
+        "probe", help="query the Shelly Cloud and summarize (raw dump to data/probe)"
+    )
+    probe_parser.add_argument(
+        "--errors",
+        action="store_true",
+        help="also capture error envelopes (wrong key, unknown id, key placements, bad route)",
+    )
+    probe_parser.add_argument(
+        "--wrong-host",
+        action="store_true",
+        help="also send one request with a dummy key to a sibling regional host",
     )
     poll = sub.add_parser("poll", help="poll the Shelly Cloud and store readings in SQLite")
     poll.add_argument("--once", action="store_true", help="run a single cycle and exit")
@@ -36,7 +46,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         return 2
     setup_logging(settings.log_level, [settings.auth_key.reveal()])
     if args.command == "probe":
-        return probe.main(settings, devices)
+        return probe.main(settings, devices, errors=args.errors, wrong_host=args.wrong_host)
     if args.command == "check":
         return check.main(settings, devices)
     if args.command == "poll":

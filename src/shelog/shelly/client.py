@@ -174,6 +174,21 @@ class ShellyClient:
     def key(self) -> Secret:
         return self._key
 
+    def for_host(self, host: str, key: Secret) -> ShellyClient:
+        """A client for another host that shares this client's rate guard and transport.
+
+        The probe uses it for its wrong-host step; sharing the guard keeps the 1 req/s
+        spacing across both hosts (the limit is account-wide).
+        """
+        return ShellyClient(
+            host,
+            key,
+            send=self._send,
+            guard=self._guard,
+            clock=self._clock,
+            timeout=self._timeout,
+        )
+
     def request(
         self,
         path: str,
