@@ -1,11 +1,18 @@
 ---
-gsd_state_version: '1.0'
-status: planning
+gsd_state_version: "1.0"
+current_phase: 01
+current_phase_name: Probe & Core Collector
+status: executing
+stopped_at: Completed 01-01-PLAN.md
+last_updated: "2026-11-01T07:04:35.657Z"
+last_activity: 2026-11-01
+last_activity_desc: Phase 01 execution started
+state_head: d7092a6464dc2795d25af28e045651131a7c3503
 progress:
   total_phases: 5
   completed_phases: 0
-  total_plans: 0
-  completed_plans: 0
+  total_plans: 8
+  completed_plans: 1
   percent: 0
 ---
 
@@ -16,14 +23,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-10-31)
 
 **Core value:** Collect a complete, trustworthy, fine-grained (~5 min) climate history from every sensor, starting as soon as possible.
-**Current focus:** Phase 1 - Probe & Core Collector
+**Current focus:** Phase 01 — Probe & Core Collector
 
 ## Current Position
 
-Phase: 1 of 5 (Probe & Core Collector)
-Plan: 0 of TBD in current phase
-Status: Ready to plan
-Last activity: 2026-10-31 — Roadmap created (5 phases, 36/36 v1 requirements mapped)
+Phase: 01 (Probe & Core Collector) — EXECUTING
+Plan: 2 of 8
+Status: Ready to execute
+Last activity: 2026-11-01 — Phase 01 execution started
 
 Progress: [░░░░░░░░░░] 0%
 
@@ -45,6 +52,11 @@ Progress: [░░░░░░░░░░] 0%
 - Trend: -
 
 *Updated after each plan completion*
+**Per-Plan Metrics:**
+
+| Plan | Duration | Tasks | Files |
+|------|----------|-------|-------|
+| Phase 01 P01 | 25 min | 2 tasks | 14 files |
 
 ## Accumulated Context
 
@@ -57,6 +69,8 @@ Recent decisions affecting current work:
 - [Roadmap]: `compose.yaml` lists both `poller` and `web` at first onboarding, because changing it later means running `bombur-onboard` again
 - [Roadmap]: `/api/health` (DATA-05) is in Phase 2, so the `web` service is a real health endpoint that shows early it can read the database while the poller writes
 - [Roadmap]: Each device gets its own silence threshold from the probe's reporting settings (PROBE-05), instead of a flat 6 h
+- [Phase 01]: Zero runtime dependencies: stdlib urllib transport instead of httpx2
+- [Phase 01]: Live runs go through scripts/live.sh (main checkout root as CWD, 1.1 s start delay) instead of literal uv run shelog
 
 ### Pending Todos
 
@@ -80,6 +94,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-10-31
-Stopped at: Roadmap created; ready to plan Phase 1
+Last session: 2026-11-01T07:04:35.621Z
+Stopped at: Completed 01-01-PLAN.md
 Resume file: None
