@@ -22,7 +22,7 @@
 - [x] **COLL-05**: Every poll attempt (Shelly and weather) is logged with outcome category, HTTP status and device count, so every gap in data is explainable
 - [x] **COLL-06**: The raw status JSON is retained alongside each stored reading so readings can be re-derived later
 - [ ] **COLL-07**: The Shelly auth key never appears in logs, error text, the database, or any public output
-- [ ] **COLL-08**: Device inventory (id, name, group, model, offsets, silence threshold) is read from a server-side `devices.toml`; only an example file is in the public repo
+- [x] **COLL-08**: Device inventory (id, name, group, model, offsets, silence threshold) is read from a server-side `devices.toml`; only an example file is in the public repo
 
 ### Outdoor Weather
 
@@ -111,7 +111,7 @@
 | COLL-05 | Phase 1 | Complete |
 | COLL-06 | Phase 1 | Complete |
 | COLL-07 | Phase 1 | Pending |
-| COLL-08 | Phase 1 | Pending |
+| COLL-08 | Phase 1 | Complete |
 | WX-01 | Phase 3 | Pending |
 | WX-02 | Phase 3 | Pending |
 | WX-03 | Phase 3 | Pending |
