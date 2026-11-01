@@ -132,3 +132,13 @@ def envelope() -> Callable[[str], Any]:
         return json.loads((FIXTURES / name).read_text(encoding="utf-8"))
 
     return load
+
+
+@pytest.fixture(autouse=True)
+def _no_real_alerts(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Tests never read real NTFY_* / ping settings, so nothing is ever delivered."""
+    from shelog import alerts
+
+    monkeypatch.setattr(
+        alerts, "load_alert_settings", lambda *a, **k: alerts.AlertSettings(None, None, None)
+    )

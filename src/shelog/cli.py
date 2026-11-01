@@ -45,6 +45,7 @@ def _build_parser() -> argparse.ArgumentParser:
     group.add_argument("--verify", type=Path, metavar="FILE", help="verify an existing snapshot")
     imp = sub.add_parser("import", help="merge another shelog database into this one")
     imp.add_argument("source", type=Path)
+    sub.add_parser("alert-drill", help="send one test notification to the ntfy topic")
     sub.add_parser(
         "check", help="scan local files for the auth key and summarize the configuration"
     )
@@ -58,6 +59,16 @@ def main(argv: Sequence[str] | None = None) -> int:
         from shelog import web
 
         return web.main(args.host, args.port)
+    if args.command == "alert-drill":
+        from shelog import alerts
+
+        settings = alerts.load_alert_settings()
+        if settings.ntfy_url is None:
+            print("alert drill: NTFY_TOPIC is not set", file=sys.stderr)
+            return 2
+        ok = alerts.drill(settings)
+        print("alert drill: delivered" if ok else "alert drill: delivery FAILED")
+        return 0 if ok else 1
     if args.command in ("backup", "import"):
         return _db_command(args)
     try:

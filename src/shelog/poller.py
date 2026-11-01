@@ -16,7 +16,7 @@ from collections.abc import Callable
 from dataclasses import dataclass, replace
 from pathlib import Path
 
-from shelog import backup, store
+from shelog import alerts, backup, store
 from shelog.clock import Clock, SystemClock
 from shelog.config import Device, Settings
 from shelog.db import SchemaTooNew, connect_rw, get_meta, migrate, set_meta
@@ -366,6 +366,9 @@ def main(
         )
         try:
             poller = Poller(settings, devices, con, client, clock)
+            alerter = alerts.Alerter(con, devices, alerts.load_alert_settings())
+            poller.hooks.append(lambda: alerter.run(int(clock.time())))
+            poller.hooks.append(lambda: alerter.ping(int(clock.time())))
         except sqlite3.Error as err:  # reads last states + auth meta: corrupt/locked DB
             return _startup_failed(err, once, stop, clock)
         if once:
