@@ -104,13 +104,15 @@ def test_sixteen_char_key_passes() -> None:
 # --- interval and log level ----------------------------------------------------------
 
 
-@pytest.mark.parametrize("bad", ["29", "0", "-5", "abc", "nan", "inf", "-inf"])
+@pytest.mark.parametrize(
+    "bad", ["29", "0", "-5", "abc", "nan", "inf", "-inf", "86401", "1e300", "1e9"]
+)
 def test_bad_interval_rejected(bad: str) -> None:
     with pytest.raises(ConfigError, match="SHELOG_POLL_INTERVAL_S"):
         load_settings(_env(SHELOG_POLL_INTERVAL_S=bad), Path("nonexistent"))
 
 
-@pytest.mark.parametrize("ok", ["30", "60", "60.5"])
+@pytest.mark.parametrize("ok", ["30", "60", "60.5", "86400"])
 def test_good_interval_passes(ok: str) -> None:
     settings = load_settings(_env(SHELOG_POLL_INTERVAL_S=ok), Path("nonexistent"))
     assert settings.poll_interval_s == float(ok)

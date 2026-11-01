@@ -31,7 +31,7 @@ uv run python scripts/collection_report.py --db data/shelog.db --since UNIX_TS -
 
 Live use: `scripts/live.sh <subcommand>` from any checkout or worktree (it runs the app from the main checkout root, where the config and `data/` live), or `uv run shelog <subcommand>` from the main checkout root. Both are governed by the Secrets paragraph above. `scripts/collection_report.py` is an aggregate-only acceptance report (no device ids); `--help` lists its options.
 
-Configuration comes from the secrets file and `SHELLY_*` / `SHELOG_*` environment variables (real environment wins): `SHELLY_AUTH_KEY`, `SHELLY_HOST`, `SHELOG_POLL_INTERVAL_S` (default 60, minimum 30), `SHELOG_DB_PATH` (default `data/shelog.db`), `SHELOG_DEVICES_FILE` (default `devices.toml`), `SHELOG_LOG_LEVEL`. The device inventory lives in the gitignored `devices.toml` (see `devices.example.toml`) - never hard-code devices.
+Configuration comes from the secrets file and `SHELLY_*` / `SHELOG_*` environment variables (real environment wins): `SHELLY_AUTH_KEY`, `SHELLY_HOST`, `SHELOG_POLL_INTERVAL_S` (default 60, minimum 30, maximum 86400), `SHELOG_DB_PATH` (default `data/shelog.db`), `SHELOG_DEVICES_FILE` (default `devices.toml`), `SHELOG_LOG_LEVEL`. The device inventory lives in the gitignored `devices.toml` (see `devices.example.toml`) - never hard-code devices.
 
 ## Module map (`src/shelog/`)
 

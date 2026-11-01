@@ -111,6 +111,7 @@ _DEVICE_KEYS = frozenset(
 _LOG_LEVELS = frozenset({"DEBUG", "INFO", "WARNING", "ERROR"})
 _MIN_KEY_LENGTH = 16
 _MIN_INTERVAL_S = 30.0
+_MAX_INTERVAL_S = 86_400.0  # one day; also keeps Event.wait() far from OverflowError
 
 
 def normalize_host(raw: str) -> str:
@@ -148,8 +149,8 @@ def _parse_interval(raw: str) -> float:
         interval = float(raw)
     except ValueError:
         raise ConfigError("SHELOG_POLL_INTERVAL_S must be a number") from None
-    if not math.isfinite(interval) or interval < _MIN_INTERVAL_S:
-        raise ConfigError("SHELOG_POLL_INTERVAL_S must be a finite number of at least 30")
+    if not math.isfinite(interval) or not _MIN_INTERVAL_S <= interval <= _MAX_INTERVAL_S:
+        raise ConfigError("SHELOG_POLL_INTERVAL_S must be a number between 30 and 86400")
     return interval
 
 
