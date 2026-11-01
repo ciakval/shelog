@@ -1,0 +1,46 @@
+# Server-owned (sent by bombur-onboard). Changing it means re-running bombur-onboard.
+x-common: &common
+  image: ghcr.io/${GITHUB_REPOSITORY:-ciakval/shelog}:${IMAGE_TAG:-latest}
+  restart: unless-stopped
+  # Must be able to write ./data (owned by the deploy user on Bombur).
+  user: "${APP_UID:-1002}:${APP_GID:-1002}"
+  logging:
+    driver: json-file
+    options: {max-size: "10m", max-file: "5"}
+
+services:
+  # The only writer of the database and the only process holding the Shelly key.
+  poller:
+    <<: *common
+    command: ["poll"]
+    env_file: .env
+    environment:
+      SHELOG_DB_PATH: /app/data/shelog.db
+      SHELOG_DEVICES_FILE: /app/devices.toml
+    volumes:
+      - ./data:/app/data
+      - ./devices.toml:/app/devices.toml:ro
+    stop_grace_period: 40s
+
+  # Public, read-only. Deliberately NO env_file: the Shelly key, ntfy topic and ping URL
+  # never enter this container's environment.
+  web:
+    <<: *common
+    command: ["serve", "--port", "8000"]
+    # Caddy reaches the app by this name over the "proxy" network; unique on Bombur.
+    container_name: ${CONTAINER_NAME:-shelog-web}
+    environment:
+      SHELOG_DB_PATH: /app/data/shelog.db
+      SHELOG_DEVICES_FILE: /app/devices.toml
+      SHELOG_LOG_LEVEL: ${SHELOG_LOG_LEVEL:-INFO}
+    volumes:
+      - ./data:/app/data
+      - ./devices.toml:/app/devices.toml:ro
+    # No "ports:": Caddy proxies to shelog-web:8000 over the proxy network.
+    networks:
+      - default
+      - proxy
+
+networks:
+  proxy:
+    external: true

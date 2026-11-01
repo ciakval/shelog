@@ -1,4 +1,4 @@
-"""Command line entry point: `shelog probe`, `shelog poll [--once]` and `shelog check`."""
+"""Command line entry point: `shelog probe|poll|serve|check|...`."""
 
 from __future__ import annotations
 
@@ -36,6 +36,9 @@ def _build_parser() -> argparse.ArgumentParser:
     )
     poll = sub.add_parser("poll", help="poll the Shelly Cloud and store readings in SQLite")
     poll.add_argument("--once", action="store_true", help="run a single cycle and exit")
+    serve = sub.add_parser("serve", help="serve the public read-only web page and JSON API")
+    serve.add_argument("--host", default="0.0.0.0")  # noqa: S104  # container listens on all
+    serve.add_argument("--port", type=int, default=8000)
     sub.add_parser(
         "check", help="scan local files for the auth key and summarize the configuration"
     )
@@ -44,6 +47,11 @@ def _build_parser() -> argparse.ArgumentParser:
 
 def main(argv: Sequence[str] | None = None) -> int:
     args = _build_parser().parse_args(argv)
+    if args.command == "serve":
+        # The public web process never loads the Shelly key (it is not in its environment).
+        from shelog import web
+
+        return web.main(args.host, args.port)
     try:
         settings = load_settings()
         devices = load_devices(settings.devices_file)

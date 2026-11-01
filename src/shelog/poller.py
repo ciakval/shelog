@@ -355,6 +355,10 @@ def main(
             except Interrupted:
                 return 1
             return 0 if category == OK else 1
+        # RateGuard is per process: after a restart, wait one gap so the previous
+        # process's last request and our first are never closer than 1.1 s.
+        if clock.wait(stop, MIN_GAP_S):
+            return 0
         return run(poller, stop, clock, rng)
     finally:
         if con is not None:
