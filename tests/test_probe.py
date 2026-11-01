@@ -189,6 +189,9 @@ def test_sibling_host_table():
     assert sibling_host("shelly-12-eu.shelly.cloud") == "shelly-13-eu.shelly.cloud"
     assert sibling_host("shelly-99-eu.shelly.cloud") == "shelly-98-eu.shelly.cloud"
     assert sibling_host("shelly-00-eu.shelly.cloud") == "shelly-01-eu.shelly.cloud"
+    assert sibling_host("shelly-103-eu.shelly.cloud") == "shelly-104-eu.shelly.cloud"
+    assert sibling_host("shelly-999-eu.shelly.cloud") == "shelly-998-eu.shelly.cloud"
+    assert sibling_host("shelly-009-eu.shelly.cloud") == "shelly-010-eu.shelly.cloud"
     assert sibling_host("example.org") is None
     assert sibling_host("shelly-1-eu.shelly.cloud") is None
 

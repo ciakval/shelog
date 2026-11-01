@@ -46,7 +46,7 @@ GROUP_WRONG_HOST = "wrong_host"
 V2_PATH = "/v2/devices/api/get"
 V2_BATCH_MAX = 10  # documented limit of ids per v2 call
 
-_SIBLING_RE = re.compile(r"shelly-(\d{2})-([a-z0-9]+)\.shelly\.cloud")
+_SIBLING_RE = re.compile(r"shelly-(\d{2,3})-([a-z0-9]+)\.shelly\.cloud")
 
 # Reporting settings the summary looks for in a v2 `settings` block (PROBE-05).
 SETTINGS_PATHS: tuple[tuple[str, ...], ...] = (
@@ -62,13 +62,18 @@ WAKEUP_PATH = ("sys", "wakeup_period")
 
 
 def sibling_host(host: str) -> str | None:
-    """Neighbouring regional host (NN+1, or NN-1 at 99) for `shelly-NN-<region>.shelly.cloud`."""
+    """Neighbouring regional host (number +1, or -1 at the top) of a shelly-NNN-<region> host.
+
+    Regional hosts carry a two- or three-digit number; the neighbour keeps the same width.
+    """
     match = _SIBLING_RE.fullmatch(host.lower())
     if match is None:
         return None
-    number = int(match.group(1))
-    neighbour = number + 1 if number + 1 <= 99 else number - 1
-    return f"shelly-{neighbour:02d}-{match.group(2)}.shelly.cloud"
+    digits = match.group(1)
+    number = int(digits)
+    top = 10 ** len(digits) - 1
+    neighbour = number + 1 if number + 1 <= top else number - 1
+    return f"shelly-{neighbour:0{len(digits)}d}-{match.group(2)}.shelly.cloud"
 
 
 @dataclass(frozen=True)
