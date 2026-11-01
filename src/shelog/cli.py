@@ -1,4 +1,4 @@
-"""Command line entry point: `shelog probe` (plan 01-02 adds `poll`)."""
+"""Command line entry point: `shelog probe` and `shelog poll [--once]`."""
 
 from __future__ import annotations
 
@@ -8,7 +8,7 @@ import sys
 import time
 from collections.abc import Sequence
 
-from shelog import probe
+from shelog import poller, probe
 from shelog.config import ConfigError, load_devices, load_settings
 
 
@@ -32,6 +32,8 @@ def _build_parser() -> argparse.ArgumentParser:
     sub.add_parser(
         "probe", help="query the Shelly Cloud once and summarize (raw dump to data/probe)"
     )
+    poll = sub.add_parser("poll", help="poll the Shelly Cloud and store readings in SQLite")
+    poll.add_argument("--once", action="store_true", help="run a single cycle and exit")
     return parser
 
 
@@ -46,4 +48,6 @@ def main(argv: Sequence[str] | None = None) -> int:
     _configure_logging(settings.log_level)
     if args.command == "probe":
         return probe.main(settings, devices)
+    if args.command == "poll":
+        return poller.main(settings, devices, once=args.once)
     return 2  # unreachable: argparse enforces a known subcommand
