@@ -8,6 +8,7 @@ import json
 import logging
 import os
 import random
+import re
 import signal
 import sqlite3
 import threading
@@ -27,6 +28,7 @@ from shelog.poller import (
     main,
     next_delay,
     run,
+    where,
 )
 from shelog.shelly.client import RateGuard, ShellyClient
 from shelog.shelly.transport import RawResponse, TransportError
@@ -315,6 +317,22 @@ def test_internal_error_row_carries_only_the_category(rig, caplog):
     assert con.execute("SELECT ok, error FROM poll_log").fetchall() == [(0, "internal")]
     assert SENTINEL_KEY not in caplog.text
     assert "RuntimeError" in caplog.text
+    # the log says WHERE it broke (file:line function) so a weeks-old bug is diagnosable
+    assert re.search(r"RuntimeError at \w+\.py:\d+ \w+", caplog.text)
+
+
+def test_where_names_type_and_call_sites_but_never_the_message():
+    def inner():
+        raise KeyError(f"020000000001 {SENTINEL_KEY}")
+
+    try:
+        inner()
+    except KeyError as err:
+        text = where(err)
+    assert text.startswith("KeyError at test_poller.py:")
+    assert "inner" in text
+    assert "020000000001" not in text
+    assert SENTINEL_KEY not in text
 
 
 def test_second_lock_on_the_same_path_raises_already_running(tmp_path):

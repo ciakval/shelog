@@ -11,8 +11,10 @@ import signal
 import sqlite3
 import sys
 import threading
+import traceback
 from collections.abc import Callable
 from dataclasses import dataclass, replace
+from pathlib import Path
 
 from shelog import store
 from shelog.clock import Clock, SystemClock
@@ -70,6 +72,17 @@ def next_delay(
     return max(delay, MIN_GAP_S)
 
 
+def where(err: BaseException, depth: int = 4) -> str:
+    """Exception type plus the innermost call sites (file:line function), no message text.
+
+    Exception messages can embed payload keys such as device ids, so only the type and code
+    locations are logged: enough to find a bug weeks into an unattended run.
+    """
+    frames = traceback.extract_tb(err.__traceback__)[-depth:]
+    trail = " < ".join(f"{Path(f.filename).name}:{f.lineno} {f.name}" for f in reversed(frames))
+    return f"{type(err).__name__} at {trail}" if trail else type(err).__name__
+
+
 @dataclass(frozen=True)
 class CycleResult:
     outcome: Outcome
@@ -109,7 +122,7 @@ class Poller:
         except Interrupted:
             raise
         except Exception as err:
-            log.error("internal error in poll cycle: %s", type(err).__name__)
+            log.error("internal error in poll cycle: %s", where(err))
             self._record_internal()
             return INTERNAL, None
         self._observe(result.outcome)
@@ -131,7 +144,7 @@ class Poller:
         try:
             store.write_cycle(self._con, record, [])
         except Exception as err:
-            log.error("could not record internal error: %s", type(err).__name__)
+            log.error("could not record internal error: %s", where(err))
 
     def _observe(self, outcome: Outcome) -> None:
         """Auth state machine: 'rejected' after consecutive auth outcomes, cleared by an ok."""
@@ -213,7 +226,7 @@ class Poller:
                 parsed = parse.parse_device(dev.model, dev.id, known[dev.id])
             except Exception as err:
                 n_rejected += 1
-                log.warning("device %s: parse error (%s)", dev.name, type(err).__name__)
+                log.warning("device %s: parse error (%s)", dev.name, where(err))
                 continue
             if isinstance(parsed, ParseReject):
                 n_rejected += 1
