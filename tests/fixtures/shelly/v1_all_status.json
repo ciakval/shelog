@@ -1,0 +1,461 @@
+{
+  "data": {
+    "devices_status": {
+      "000001": {
+        "_sleeping": true,
+        "_updated": "2026-11-01 02:16:01",
+        "act_reasons": [
+          "sensor"
+        ],
+        "actions_stats": {
+          "skipped": 0
+        },
+        "bat": {
+          "value": 100,
+          "voltage": 3.04
+        },
+        "cfg_changed_cnt": 0,
+        "cloud": {
+          "connected": true,
+          "enabled": true
+        },
+        "flood": false,
+        "fs_free": 146584,
+        "fs_size": 233681,
+        "getinfo": {
+          "fw_info": {
+            "device": "shellyflood-000001",
+            "fw": "20230913-112632/v1.14.0-gcb84623"
+          }
+        },
+        "has_update": false,
+        "is_valid": true,
+        "mac": "020000000001",
+        "mqtt": {
+          "connected": false
+        },
+        "rain_sensor": false,
+        "ram_free": 42160,
+        "ram_total": 52392,
+        "sensor_error": 0,
+        "serial": 2,
+        "time": "03:16",
+        "tmp": {
+          "is_valid": true,
+          "tC": 24.62,
+          "tF": 76.32,
+          "units": "C",
+          "value": 24.62
+        },
+        "unixtime": 1793499361,
+        "update": {
+          "has_update": false,
+          "new_version": "",
+          "old_version": "20230913-112632/v1.14.0-gcb84623",
+          "status": "unknown"
+        },
+        "uptime": 18,
+        "wifi_sta": {
+          "connected": true,
+          "ip": "192.0.2.4",
+          "rssi": -64,
+          "ssid": "fixture-ssid-1"
+        }
+      },
+      "020000000002": {
+        "_sleeping": true,
+        "_updated": "2026-11-01 06:56:48",
+        "act_reasons": [
+          "sensor"
+        ],
+        "actions_stats": {
+          "skipped": 0
+        },
+        "bat": {
+          "value": 95,
+          "voltage": 2.94
+        },
+        "cfg_changed_cnt": 0,
+        "cloud": {
+          "connected": true,
+          "enabled": true
+        },
+        "connect_retries": 0,
+        "fs_free": 155620,
+        "fs_size": 233681,
+        "getinfo": {
+          "fw_info": {
+            "device": "shellyht-020000000002",
+            "fw": "20230913-112531/v1.14.0-gcb84623"
+          }
+        },
+        "has_update": false,
+        "hum": {
+          "is_valid": true,
+          "value": 100
+        },
+        "is_valid": true,
+        "mac": "020000000002",
+        "mqtt": {
+          "connected": false
+        },
+        "ram_free": 42148,
+        "ram_total": 52384,
+        "sensor_error": 0,
+        "serial": 2,
+        "time": "07:56",
+        "tmp": {
+          "is_valid": true,
+          "tC": 25.25,
+          "tF": 77.45,
+          "units": "C",
+          "value": 25.25
+        },
+        "unixtime": 1793516208,
+        "update": {
+          "has_update": false,
+          "new_version": "",
+          "old_version": "20230913-112531/v1.14.0-gcb84623",
+          "status": "unknown"
+        },
+        "uptime": 18,
+        "wifi_sta": {
+          "connected": true,
+          "ip": "192.0.2.7",
+          "rssi": -69,
+          "ssid": "fixture-ssid-1"
+        }
+      },
+      "000003": {
+        "_sleeping": true,
+        "_updated": "2026-11-01 07:01:17",
+        "act_reasons": [
+          "sensor"
+        ],
+        "actions_stats": {
+          "skipped": 0
+        },
+        "bat": {
+          "value": 94,
+          "voltage": 2.93
+        },
+        "cfg_changed_cnt": 0,
+        "cloud": {
+          "connected": true,
+          "enabled": true
+        },
+        "connect_retries": 0,
+        "fs_free": 153863,
+        "fs_size": 233681,
+        "getinfo": {
+          "fw_info": {
+            "device": "shellyht-000003",
+            "fw": "20230913-112531/v1.14.0-gcb84623"
+          }
+        },
+        "has_update": false,
+        "hum": {
+          "is_valid": true,
+          "value": 100
+        },
+        "is_valid": true,
+        "mac": "020000000003",
+        "mqtt": {
+          "connected": false
+        },
+        "ram_free": 42144,
+        "ram_total": 52384,
+        "sensor_error": 0,
+        "serial": 2,
+        "time": "08:01",
+        "tmp": {
+          "is_valid": true,
+          "tC": 25,
+          "tF": 77,
+          "units": "C",
+          "value": 25
+        },
+        "unixtime": 1793516478,
+        "update": {
+          "has_update": false,
+          "new_version": "",
+          "old_version": "20230913-112531/v1.14.0-gcb84623",
+          "status": "unknown"
+        },
+        "uptime": 17,
+        "wifi_sta": {
+          "connected": true,
+          "ip": "192.0.2.5",
+          "rssi": -65,
+          "ssid": "fixture-ssid-1"
+        }
+      },
+      "000004": {
+        "_sleeping": true,
+        "_updated": "2026-11-01 06:27:35",
+        "act_reasons": [
+          "sensor"
+        ],
+        "actions_stats": {
+          "skipped": 0
+        },
+        "bat": {
+          "value": 100,
+          "voltage": 2.97
+        },
+        "cfg_changed_cnt": 0,
+        "cloud": {
+          "connected": true,
+          "enabled": true
+        },
+        "connect_retries": 0,
+        "fs_free": 153612,
+        "fs_size": 233681,
+        "getinfo": {
+          "fw_info": {
+            "device": "shellyht-000004",
+            "fw": "20230913-112531/v1.14.0-gcb84623"
+          }
+        },
+        "has_update": false,
+        "hum": {
+          "is_valid": true,
+          "value": 70
+        },
+        "is_valid": true,
+        "mac": "020000000004",
+        "mqtt": {
+          "connected": false
+        },
+        "ram_free": 42128,
+        "ram_total": 52384,
+        "sensor_error": 0,
+        "serial": 2,
+        "time": "07:27",
+        "tmp": {
+          "is_valid": true,
+          "tC": 26,
+          "tF": 78.8,
+          "units": "C",
+          "value": 26
+        },
+        "unixtime": 1793514455,
+        "update": {
+          "has_update": false,
+          "new_version": "",
+          "old_version": "20230913-112531/v1.14.0-gcb84623",
+          "status": "unknown"
+        },
+        "uptime": 18,
+        "wifi_sta": {
+          "connected": true,
+          "ip": "192.0.2.1",
+          "rssi": -38,
+          "ssid": "fixture-ssid-1"
+        }
+      },
+      "000005": {
+        "_sleeping": true,
+        "_updated": "2026-11-01 06:50:59",
+        "act_reasons": [
+          "sensor"
+        ],
+        "actions_stats": {
+          "skipped": 0
+        },
+        "bat": {
+          "value": 80,
+          "voltage": 2.89
+        },
+        "cfg_changed_cnt": 0,
+        "cloud": {
+          "connected": false,
+          "enabled": true
+        },
+        "connect_retries": 0,
+        "fs_free": 156373,
+        "fs_size": 233681,
+        "has_update": false,
+        "hum": {
+          "is_valid": true,
+          "value": 54
+        },
+        "is_valid": true,
+        "mac": "020000000005",
+        "mqtt": {
+          "connected": false
+        },
+        "ram_free": 40972,
+        "ram_total": 50968,
+        "serial": 2,
+        "time": "",
+        "tmp": {
+          "is_valid": true,
+          "tC": 25.25,
+          "tF": 77.45,
+          "units": "C",
+          "value": 25.25
+        },
+        "unixtime": 0,
+        "update": {
+          "has_update": false,
+          "new_version": "",
+          "old_version": "20210710-130145/v1.11.0-g12a9327-master",
+          "status": "unknown"
+        },
+        "uptime": 6,
+        "wifi_sta": {
+          "connected": true,
+          "ip": "192.0.2.2",
+          "rssi": -48,
+          "ssid": "fixture-ssid-1"
+        }
+      },
+      "020000000006": {
+        "_sleeping": true,
+        "_updated": "2026-11-01 06:25:59",
+        "ble": {
+          "addr": "02:01:00:00:00:02,p"
+        },
+        "cloud": {
+          "connected": true
+        },
+        "code": "S3SN-0U12A",
+        "devicepower:0": {
+          "battery": {
+            "V": 6.03,
+            "percent": 100
+          },
+          "external": {
+            "present": false
+          },
+          "id": 0
+        },
+        "ht_ui": {},
+        "humidity:0": {
+          "id": 0,
+          "rh": 49.9
+        },
+        "id": "020000000006",
+        "matter": {
+          "commissionable": false,
+          "num_fabrics": 0
+        },
+        "mqtt": {
+          "connected": false
+        },
+        "serial": 1793514359,
+        "sys": {
+          "available_updates": {},
+          "cfg_rev": 14,
+          "fs_free": 712704,
+          "fs_size": 1048576,
+          "kvs_rev": 0,
+          "last_sync_ts": 1793514357,
+          "mac": "020000000006",
+          "ram_free": 163900,
+          "ram_min_free": 142368,
+          "ram_size": 273616,
+          "reset_reason": 8,
+          "restart_required": false,
+          "time": "07:25",
+          "unixtime": 1793514358,
+          "uptime": 2,
+          "utc_offset": 3600,
+          "wakeup_period": 7200,
+          "wakeup_reason": {
+            "boot": "deepsleep_wake",
+            "cause": "periodic"
+          },
+          "webhook_rev": 0
+        },
+        "temperature:0": {
+          "id": 0,
+          "tC": 25.2,
+          "tF": 77.4
+        },
+        "ts": 1793514358.86,
+        "wifi": {
+          "bssid": "02:01:00:00:00:01",
+          "channel": 10,
+          "rssi": -76,
+          "ssid": "fixture-ssid-1",
+          "sta_ip": "192.0.2.3",
+          "sta_ip6": [
+            "2001:db8::1"
+          ],
+          "status": "got ip"
+        },
+        "ws": {
+          "connected": false
+        }
+      },
+      "000007": {
+        "_sleeping": true,
+        "_updated": "2026-11-01 06:55:53",
+        "act_reasons": [
+          "sensor"
+        ],
+        "actions_stats": {
+          "skipped": 0
+        },
+        "bat": {
+          "value": 96,
+          "voltage": 2.94
+        },
+        "cfg_changed_cnt": 0,
+        "cloud": {
+          "connected": true,
+          "enabled": true
+        },
+        "connect_retries": 0,
+        "fs_free": 153863,
+        "fs_size": 233681,
+        "getinfo": {
+          "fw_info": {
+            "device": "shellyht-000007",
+            "fw": "20230913-112531/v1.14.0-gcb84623"
+          }
+        },
+        "has_update": false,
+        "hum": {
+          "is_valid": true,
+          "value": 61
+        },
+        "is_valid": true,
+        "mac": "020000000007",
+        "mqtt": {
+          "connected": false
+        },
+        "ram_free": 42184,
+        "ram_total": 52384,
+        "sensor_error": 0,
+        "serial": 2,
+        "time": "07:55",
+        "tmp": {
+          "is_valid": true,
+          "tC": 23.5,
+          "tF": 74.3,
+          "units": "C",
+          "value": 23.5
+        },
+        "unixtime": 1793516153,
+        "update": {
+          "has_update": false,
+          "new_version": "",
+          "old_version": "20230913-112531/v1.14.0-gcb84623",
+          "status": "unknown"
+        },
+        "uptime": 18,
+        "wifi_sta": {
+          "connected": true,
+          "ip": "192.0.2.6",
+          "rssi": -56,
+          "ssid": "fixture-ssid-1"
+        }
+      }
+    },
+    "pending_notifications": {}
+  },
+  "isok": true
+}
