@@ -53,3 +53,24 @@ def migrate(con: sqlite3.Connection) -> int:
             raise
         current = number
     return current
+
+
+def set_meta(con: sqlite3.Connection, key: str, value: str) -> None:
+    """Upsert one meta row in its own transaction."""
+    con.execute("BEGIN IMMEDIATE")
+    try:
+        con.execute(
+            "INSERT INTO meta(key, value) VALUES (?, ?)"
+            " ON CONFLICT(key) DO UPDATE SET value = excluded.value",
+            (key, value),
+        )
+        con.execute("COMMIT")
+    except BaseException:
+        if con.in_transaction:
+            con.execute("ROLLBACK")
+        raise
+
+
+def get_meta(con: sqlite3.Connection, key: str) -> str | None:
+    row = con.execute("SELECT value FROM meta WHERE key = ?", (key,)).fetchone()
+    return None if row is None else str(row[0])
