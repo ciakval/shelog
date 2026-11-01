@@ -3,16 +3,16 @@ gsd_state_version: "1.0"
 current_phase: 01
 current_phase_name: Probe & Core Collector
 status: executing
-stopped_at: Completed 01-06-PLAN.md
-last_updated: "2026-11-01T07:36:08.827Z"
+stopped_at: Completed 01-07-PLAN.md
+last_updated: "2026-11-01T07:44:33.189Z"
 last_activity: 2026-11-01
 last_activity_desc: Phase 01 execution started
-state_head: 9d8b12954ce908a243ccaee29bd2c6eb3e246939
+state_head: c41deac2909e02eee1b93422e3c05652b5629f32
 progress:
   total_phases: 5
   completed_phases: 0
   total_plans: 8
-  completed_plans: 6
+  completed_plans: 7
   percent: 0
 ---
 
@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-10-31)
 ## Current Position
 
 Phase: 01 (Probe & Core Collector) — EXECUTING
-Plan: 7 of 8
+Plan: 8 of 8
 Status: Ready to execute
 Last activity: 2026-11-01 — Phase 01 execution started
 
@@ -62,6 +62,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 1 P04 | 30 min | 2 tasks | 8 files |
 | Phase 01 P05 | 25 min | 2 tasks | 8 files |
 | Phase 01 P06 | 30 min | 2 tasks | 6 files |
+| Phase 01 P07 | 70min | 2 tasks | 12 files |
 
 ## Accumulated Context
 
@@ -86,6 +87,9 @@ Recent decisions affecting current work:
 - [Phase 01]: 01-05: RedactingFormatter redacts the fully formatted record (raw, quote, quote_plus forms); shelog check scans db/wal/shm and data/ and prints only counts and file names
 - [Phase 01]: 01-06: probe export refuses unless the v1_all_status capture is ok, so pseudonym numbering always matches the committed v1 fixture
 - [Phase 01]: 01-06: v2 list responses are classified by the v1-shaped classify() (bad_response); 01-07 decides whether v2 needs its own classification
+- [Phase 01]: 01-07: AUTH_CONFIRMATIONS stays 2 (no live throttle evidence; wrong host answers like a wrong key, HTTP 401)
+- [Phase 01]: 01-07: v2 works with _updated for all models but no v2 poll path kept; v1 all_status stays primary
+- [Phase 01]: 01-07: sanitizer redacts DeviceInfo.key, coordinates, _gip_s and regional cloud host; scan flags leftovers
 
 ### Pending Todos
 
@@ -109,6 +113,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-11-01T07:36:08.792Z
-Stopped at: Completed 01-06-PLAN.md
+Last session: 2026-11-01T07:44:33.156Z
+Stopped at: Completed 01-07-PLAN.md
 Resume file: None

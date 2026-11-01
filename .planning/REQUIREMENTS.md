@@ -7,11 +7,11 @@
 
 ### Probe & Discovery
 
-- [ ] **PROBE-01**: Owner can run `shelog probe` with their auth key/host and get the raw status JSON for every configured device
-- [ ] **PROBE-02**: Sanitized probe responses (no device IDs, MACs, IPs, SSIDs, keys) are committed as test fixtures for each model (H&T Gen1, H&T Gen3, Flood Gen1), and a test fails if a fixture contains a real identifier
-- [ ] **PROBE-03**: For each model, the field that marks the actual report time is identified and documented (`ts_source` decision), including timezone semantics
-- [ ] **PROBE-04**: Error behaviour is captured and documented: wrong key, wrong host, unknown device id in a batch, rate-limit response, sleeping/offline device
-- [ ] **PROBE-05**: Each device's reporting settings (wake period, thresholds, any on-device offset) are recorded so silence thresholds can be set per device
+- [x] **PROBE-01**: Owner can run `shelog probe` with their auth key/host and get the raw status JSON for every configured device
+- [x] **PROBE-02**: Sanitized probe responses (no device IDs, MACs, IPs, SSIDs, keys) are committed as test fixtures for each model (H&T Gen1, H&T Gen3, Flood Gen1), and a test fails if a fixture contains a real identifier
+- [x] **PROBE-03**: For each model, the field that marks the actual report time is identified and documented (`ts_source` decision), including timezone semantics
+- [x] **PROBE-04**: Error behaviour is captured and documented: wrong key, wrong host, unknown device id in a batch, rate-limit response, sleeping/offline device
+- [x] **PROBE-05**: Each device's reporting settings (wake period, thresholds, any on-device offset) are recorded so silence thresholds can be set per device
 
 ### Collection
 
@@ -99,11 +99,11 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| PROBE-01 | Phase 1 | Pending |
-| PROBE-02 | Phase 1 | Pending |
-| PROBE-03 | Phase 1 | Pending |
-| PROBE-04 | Phase 1 | Pending |
-| PROBE-05 | Phase 1 | Pending |
+| PROBE-01 | Phase 1 | Complete |
+| PROBE-02 | Phase 1 | Complete |
+| PROBE-03 | Phase 1 | Complete |
+| PROBE-04 | Phase 1 | Complete |
+| PROBE-05 | Phase 1 | Complete |
 | COLL-01 | Phase 1 | Complete |
 | COLL-02 | Phase 1 | Pending |
 | COLL-03 | Phase 1 | Pending |
