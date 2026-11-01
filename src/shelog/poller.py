@@ -16,7 +16,7 @@ from collections.abc import Callable
 from dataclasses import dataclass, replace
 from pathlib import Path
 
-from shelog import store
+from shelog import backup, store
 from shelog.clock import Clock, SystemClock
 from shelog.config import Device, Settings
 from shelog.db import SchemaTooNew, connect_rw, get_meta, migrate, set_meta
@@ -44,6 +44,7 @@ AUTH_FLOOR_S = 300.0  # a rejected key is retried no faster than this
 AUTH_CONFIRMATIONS = 2  # consecutive auth outcomes before declaring the key rejected
 STARTUP_FAIL_SLEEP_S = 30.0  # avoid a hot restart loop under `restart: unless-stopped`
 NEVER_STORED_CYCLES = 10  # ok cycles with a device present but nothing ever stored
+HOUSEKEEPING_EVERY_S = 300.0  # backups/alerts run at most this often (monotonic)
 
 AUTH_OK = "ok"
 AUTH_REJECTED = "rejected"
@@ -107,6 +108,23 @@ class Poller:
         self._never_stored: dict[str, int] = {}
         self._auth_streak = 0
         self._auth_state = get_meta(con, META_AUTH)
+        self._next_housekeeping = 0.0
+        self.hooks: list[Callable[[], None]] = [self._daily_backup]
+
+    def _daily_backup(self) -> None:
+        backup.daily(self._con, self._settings.db_path.parent / "backup", self._clock.time())
+
+    def housekeeping(self) -> None:
+        """Backups and alerts. Rate-limited; a failing hook is logged and never raises."""
+        now = self._clock.monotonic()
+        if now < self._next_housekeeping:
+            return
+        self._next_housekeeping = now + HOUSEKEEPING_EVERY_S
+        for hook in self.hooks:
+            try:
+                hook()
+            except Exception as err:
+                log.error("housekeeping failed: %s", where(err))
 
     @property
     def interval(self) -> float:
@@ -291,6 +309,7 @@ def run(poller: Poller, stop: threading.Event, clock: Clock, rng: random.Random)
         except Interrupted:
             break
         failures = 0 if category == OK else failures + 1
+        poller.housekeeping()
         delay = next_delay(poller.interval, failures, category, retry_after, rng)
         now = clock.monotonic()
         if category == OK:

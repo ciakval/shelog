@@ -446,3 +446,27 @@ def test_set_meta_upserts(tmp_db):
     set_meta(tmp_db, "k", "b")
     assert get_meta(tmp_db, "k") == "b"
     assert get_meta(tmp_db, "missing") is None
+
+
+def test_housekeeping_is_rate_limited_and_never_raises(rig, caplog):
+    poller, _send, _con, clock = rig
+    calls = []
+
+    def boom():
+        calls.append(1)
+        raise RuntimeError("secret-ish text")
+
+    poller.hooks = [boom]
+    poller.housekeeping()
+    poller.housekeeping()  # within the window: skipped
+    clock.advance(301)
+    poller.housekeeping()
+    assert len(calls) == 2
+    assert "secret-ish text" not in caplog.text
+
+
+def test_daily_backup_hook_writes_a_snapshot(rig, test_settings):
+    poller, *_ = rig
+    poller.housekeeping()
+    snaps = list((test_settings.db_path.parent / "backup").glob("shelog-*.db"))
+    assert len(snaps) == 1

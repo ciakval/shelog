@@ -39,6 +39,12 @@ def _build_parser() -> argparse.ArgumentParser:
     serve = sub.add_parser("serve", help="serve the public read-only web page and JSON API")
     serve.add_argument("--host", default="0.0.0.0")  # noqa: S104  # container listens on all
     serve.add_argument("--port", type=int, default=8000)
+    bk = sub.add_parser("backup", help="write a consistent, verified snapshot of the database")
+    group = bk.add_mutually_exclusive_group(required=True)
+    group.add_argument("--out", type=Path, metavar="FILE", help="write the snapshot here")
+    group.add_argument("--verify", type=Path, metavar="FILE", help="verify an existing snapshot")
+    imp = sub.add_parser("import", help="merge another shelog database into this one")
+    imp.add_argument("source", type=Path)
     sub.add_parser(
         "check", help="scan local files for the auth key and summarize the configuration"
     )
@@ -52,6 +58,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         from shelog import web
 
         return web.main(args.host, args.port)
+    if args.command in ("backup", "import"):
+        return _db_command(args)
     try:
         settings = load_settings()
         devices = load_devices(settings.devices_file)
@@ -73,3 +81,46 @@ def main(argv: Sequence[str] | None = None) -> int:
     if args.command == "poll":
         return poller.main(settings, devices, once=args.once)
     return 2  # unreachable: argparse enforces a known subcommand
+
+
+def _db_path() -> Path:
+    """DB path without loading (or needing) the Shelly settings."""
+    import os
+
+    from shelog.config import read_dotenv
+
+    value = os.environ.get("SHELOG_DB_PATH") or read_dotenv(Path(".env")).get("SHELOG_DB_PATH")
+    return Path(value or "data/shelog.db")
+
+
+def _db_command(args: argparse.Namespace) -> int:
+    from shelog import backup, importer
+    from shelog.db import connect_rw, migrate
+
+    if args.command == "backup" and args.verify is not None:
+        try:
+            count = backup.verify(args.verify)
+        except backup.BackupError as err:
+            print(f"backup invalid: {err.args[0]}", file=sys.stderr)
+            return 1
+        print(f"backup ok: integrity_check passed, {count} readings")
+        return 0
+    con = connect_rw(_db_path())
+    try:
+        migrate(con)
+        if args.command == "backup":
+            count = backup.snapshot(con, args.out)
+            print(f"backup written and verified: {count} readings")
+            return 0
+        try:
+            result = importer.import_db(con, args.source)
+        except FileNotFoundError:
+            print("import failed: source database not found", file=sys.stderr)
+            return 1
+        print(
+            f"imported readings={result.readings} raw_status={result.raw_status}"
+            f" poll_log={result.poll_log} already_present={result.skipped_readings}"
+        )
+        return 0
+    finally:
+        con.close()
