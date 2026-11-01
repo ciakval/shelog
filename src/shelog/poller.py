@@ -332,7 +332,10 @@ def main(
             guard=RateGuard(clock, MIN_GAP_S),
             clock=clock,
         )
-        poller = Poller(settings, devices, con, client, clock)
+        try:
+            poller = Poller(settings, devices, con, client, clock)
+        except sqlite3.Error as err:  # reads last states + auth meta: corrupt/locked DB
+            return _startup_failed(err, once, stop, clock)
         if once:
             try:
                 category, _ = poller.cycle(stop)

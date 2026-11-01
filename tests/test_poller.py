@@ -9,6 +9,7 @@ import logging
 import os
 import random
 import signal
+import sqlite3
 import threading
 
 import pytest
@@ -373,6 +374,23 @@ def test_main_loop_mode_sleeps_before_exiting_on_startup_failure(
         assert send.calls == []
     finally:
         ro.chmod(0o700)
+
+
+def test_main_loop_mode_survives_a_db_error_while_constructing_the_poller(
+    test_settings, test_devices, fake_clock, monkeypatch, caplog
+):
+    def boom(con):
+        raise sqlite3.DatabaseError(f"database disk image is malformed {SENTINEL_KEY}")
+
+    monkeypatch.setattr("shelog.poller.store.load_last_states", boom)
+    caplog.set_level(logging.ERROR)
+    before = fake_clock.monotonic()
+    send = FakeSend(fake_clock)
+    assert main(test_settings, test_devices, once=False, clock=fake_clock, send=send) == 1
+    assert fake_clock.monotonic() - before >= STARTUP_FAIL_SLEEP_S  # no hot restart loop
+    assert send.calls == []
+    assert "startup failed: DatabaseError" in caplog.text
+    assert SENTINEL_KEY not in caplog.text
 
 
 def test_main_once_runs_one_cycle_and_reports_exit_code(
