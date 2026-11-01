@@ -465,6 +465,8 @@ CREATE TABLE meta (
 | Flood Gen1 | `_updated` | UTC | `unixtime` 0, `time` `""` | no `hum` key |
 | H&T Gen3 | `_updated` | UTC | `_updated` `2026-10-31 18:21:58` == `sys.unixtime` 1793470918 exactly | `ts` (float, +0.51 s) is cloud receive time; `sys.unixtime` is `null` without NTP sync [CITED: gen2 Sys docs]; `sys.time` local |
 
+**Re-verified 2026-11-01 (plan 01-07 live probe, see `docs/shelly-api.md`):** `_updated` is UTC on every model; Gen1 `unixtime` matches it within 1 s where non-zero (fw 1.14, now including the Flood); fw 1.11 (LR-3) still has `unixtime` 0; Gen3 `sys.unixtime` and `ts` are in the same second as `_updated`.
+
 All rows `[VERIFIED: scratchpad all_status.json:1]` except the `null`-without-NTP note `[CITED: shelly-api-docs.shelly.cloud/gen2/ComponentsAndServices/Sys]`. Device wake reasons: Gen1 `act_reasons` documents `battery, button, periodic, poweron, sensor, alarm` [CITED: gen1 docs]; Gen3 `sys.wakeup_reason.cause` documents `button, usb, periodic, status_update, alarm, alarm_test, undefined` [CITED: gen2 Sys docs]. All six Gen1 units showed `["sensor"]` and the Gen3 showed `periodic`: the raw JSON retained per row is therefore enough to later separate threshold-triggered from periodic reports when tuning silence thresholds.
 
 ### Reporting settings (PROBE-05): what is obtainable
