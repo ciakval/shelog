@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import sys
 from collections.abc import Sequence
+from pathlib import Path
 
 from shelog import check, poller, probe
 from shelog.config import ConfigError, load_devices, load_settings
@@ -27,6 +28,12 @@ def _build_parser() -> argparse.ArgumentParser:
         action="store_true",
         help="also send one request with a dummy key to a sibling regional host",
     )
+    probe_parser.add_argument(
+        "--save-fixtures",
+        type=Path,
+        metavar="DIR",
+        help="write sanitized fixtures (one shared pseudonym mapping) to DIR, or nothing",
+    )
     poll = sub.add_parser("poll", help="poll the Shelly Cloud and store readings in SQLite")
     poll.add_argument("--once", action="store_true", help="run a single cycle and exit")
     sub.add_parser(
@@ -46,7 +53,13 @@ def main(argv: Sequence[str] | None = None) -> int:
         return 2
     setup_logging(settings.log_level, [settings.auth_key.reveal()])
     if args.command == "probe":
-        return probe.main(settings, devices, errors=args.errors, wrong_host=args.wrong_host)
+        return probe.main(
+            settings,
+            devices,
+            errors=args.errors,
+            wrong_host=args.wrong_host,
+            save_fixtures=args.save_fixtures,
+        )
     if args.command == "check":
         return check.main(settings, devices)
     if args.command == "poll":

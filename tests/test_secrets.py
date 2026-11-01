@@ -223,6 +223,7 @@ def test_cli_check_runs_from_a_valid_config(
     sentinel_key: str,
 ) -> None:
     monkeypatch.chdir(tmp_path)
+    monkeypatch.delenv("SHELOG_DEVICES_FILE", raising=False)  # the owner scan run sets it
     monkeypatch.setenv("SHELLY_AUTH_KEY", sentinel_key)
     monkeypatch.setenv("SHELLY_HOST", "shelly-00-eu.shelly.cloud")
     (tmp_path / "devices.toml").write_text(

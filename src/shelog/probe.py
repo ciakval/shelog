@@ -13,6 +13,7 @@ DUMMY_KEY and never read the real one.
 from __future__ import annotations
 
 import json
+import os
 import re
 import sys
 from collections.abc import Callable, Mapping, Sequence
@@ -20,10 +21,12 @@ from dataclasses import dataclass, replace
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any, TextIO
+from urllib.parse import quote, quote_plus
 
 from shelog.clock import Clock, SystemClock
 from shelog.config import Device, Secret, Settings
 from shelog.lock import AlreadyRunning, acquire_instance_lock
+from shelog.sanitize import SanitizeError, sanitize_docs, scan
 from shelog.shelly import transport
 from shelog.shelly.client import Outcome, RateGuard, ShellyClient, classify
 from shelog.shelly.transport import RawResponse, TransportError
@@ -381,6 +384,111 @@ def _summarize_extras(
 
 
 # ---------------------------------------------------------------------------
+# Fixture export (--save-fixtures)
+# ---------------------------------------------------------------------------
+
+NON_JSON_MAX_CHARS = 2000
+V1_FIXTURE = "v1_all_status"  # committed by plan 01-03 under the same numbering; never rewritten
+
+
+def _body_doc(raw: RawResponse) -> Any:
+    """Body as a JSON document, the dummy key neutralised; non-JSON text is wrapped."""
+    text = raw.body.decode("utf-8", errors="replace").replace(DUMMY_KEY, "dummy-key")
+    try:
+        return json.loads(text)
+    except (ValueError, RecursionError):
+        return {"_non_json_body": text[:NON_JSON_MAX_CHARS]}
+
+
+def _key_forms(key: str) -> list[str]:
+    forms = {key, quote(key, safe=""), quote_plus(key)}
+    return sorted(form for form in forms if form)
+
+
+def _error_entry(step: ProbeStep, result: StepResult) -> dict[str, Any]:
+    raw = result.raw
+    return {
+        "http_status": result.outcome.http_status,
+        "has_retry_after": raw is not None and "retry-after" in raw.headers,
+        "key_placement": step.key_placement,
+        "expected_category": result.outcome.category,
+        "body": _body_doc(raw) if raw is not None else None,
+    }
+
+
+def _write_atomic(path: Path, text: str) -> None:
+    tmp = path.with_name(path.name + ".tmp")
+    tmp.write_text(text, encoding="utf-8")
+    os.replace(tmp, path)
+
+
+def export_fixtures(
+    out_dir: Path,
+    chosen: Sequence[ProbeStep],
+    captures: Mapping[str, StepResult],
+    devices: tuple[Device, ...],
+    key: str,
+    stdout: TextIO,
+) -> int:
+    """Sanitize every capture with ONE mapping and write fixtures, or write nothing.
+
+    Messages name steps, rules and JSON paths only: never a body, id, key or URL.
+    """
+    v1 = captures.get(V1_FIXTURE)
+    if v1 is None or v1.raw is None or not v1.outcome.ok:
+        print(
+            "export refused: the v1_all_status capture is missing, so device numbering "
+            "could not match the committed fixture",
+            file=stdout,
+        )
+        return 1
+
+    forms = _key_forms(key)
+    for name, result in captures.items():
+        if result.raw is None:
+            continue
+        text = result.raw.body.decode("utf-8", errors="replace")
+        if any(form in text for form in forms):
+            print(f"export refused: the {name} body contains the auth key", file=stdout)
+            return 1
+
+    names: list[str] = []
+    docs: list[Any] = []
+    for step in chosen:
+        raw = captures[step.name].raw
+        if step.group == GROUP_DEFAULT and raw is not None:
+            names.append(step.name)
+            docs.append(_body_doc(raw))
+    failing = [s for s in chosen if s.group != GROUP_DEFAULT]
+    if failing:
+        docs.append({s.name: _error_entry(s, captures[s.name]) for s in failing})
+        names.append("errors")
+
+    try:
+        outputs = sanitize_docs(docs, [d.id for d in devices])
+    except SanitizeError:
+        print("export refused: the sanitizer rejected the captured identifiers", file=stdout)
+        return 1
+
+    files = {f"{name}.json": text for name, text in zip(names, outputs, strict=True)}
+    findings = [(fname, f) for fname, text in files.items() for f in scan(text)]
+    if findings:
+        for fname, finding in findings:
+            print(f"export refused: {fname}: {finding}", file=stdout)
+        return 1
+
+    out_dir.mkdir(parents=True, exist_ok=True)
+    written = 0
+    for fname, text in files.items():
+        if fname == f"{V1_FIXTURE}.json":
+            continue
+        _write_atomic(out_dir / fname, text)
+        written += 1
+    print(f"saved {written} sanitized fixture file(s)", file=stdout)
+    return 0
+
+
+# ---------------------------------------------------------------------------
 # Run
 # ---------------------------------------------------------------------------
 
@@ -395,6 +503,7 @@ def run_probe(
     stdout: TextIO | None = None,
     errors: bool = False,
     wrong_host: bool = False,
+    save_fixtures: Path | None = None,
     steps: Sequence[ProbeStep] | None = None,
 ) -> int:
     out = stdout if stdout is not None else sys.stdout
@@ -443,7 +552,14 @@ def run_probe(
         return 1
     all_present = _summarize(baseline, devices, clock.time(), out)
     _summarize_extras(captures, devices, out)
-    return 0 if baseline.ok and all_present else 1
+    code = 0 if baseline.ok and all_present else 1
+    if save_fixtures is not None:
+        exported = export_fixtures(
+            save_fixtures, chosen, captures, devices, client.key.reveal(), out
+        )
+        if exported != 0:
+            code = 1
+    return code
 
 
 def main(
@@ -452,6 +568,7 @@ def main(
     *,
     errors: bool = False,
     wrong_host: bool = False,
+    save_fixtures: Path | None = None,
     clock: Clock | None = None,
     send: Callable[..., RawResponse] | None = None,
     out_root: Path = Path("data/probe"),
@@ -479,6 +596,7 @@ def main(
             out_root=out_root,
             errors=errors,
             wrong_host=wrong_host,
+            save_fixtures=save_fixtures,
         )
     finally:
         handle.close()
