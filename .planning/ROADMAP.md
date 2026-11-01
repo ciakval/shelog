@@ -61,10 +61,10 @@ Plans:
 - [ ] 02-01-PLAN.md: Tracer. Key-free `shelog serve` with `/healthz` + `/api/health` from the poller's DB, packaged as `poller` + `web` from one image (Dockerfile, compose.yaml, local two-container smoke), hardened health body, umask and exception handler (wave 1)
 - [ ] 02-02-PLAN.md: CI with a test gate, the complete server `.env.example` (SET_ME placeholders, uid 1002), 1.1 s start delay, `where()` in a leaf module, private data files, acceptance report fixed for closed WAL DBs with gap listing (wave 1)
 - [ ] 02-03-PLAN.md: Pre-flight, owner onboarding checkpoint, local poller stopped, then push and first production deploy confirmed via the public endpoint (wave 2)
-- [ ] 02-04-PLAN.md: Verified snapshots (`shelog backup --out/--verify`) and idempotent `shelog import` of the local history (wave 2)
-- [ ] 02-05-PLAN.md: ntfy alerts with recoveries (auth rejected, poll failing, device silent, battery low), healthchecks.io dead-man ping, daily backup in poller housekeeping, `shelog alert-drill` (wave 3)
-- [ ] 02-06-PLAN.md: DEPLOYMENT.md/README, CLAUDE.md files aligned with the as-built stack, restore rehearsal on a scratch copy, local export, final redeploy (wave 4)
-- [ ] 02-07-PLAN.md: Owner production checks (import, alert drill, restart, reboot, backup) and phase acceptance; the phase stays open until a VPS reboot is observed (wave 5)
+- [ ] 02-04-PLAN.md: Verified snapshots (`shelog backup --out/--verify`) and idempotent `shelog import` of the local history (wave 3, after the first production push so the pre-flight guard stays valid)
+- [ ] 02-05-PLAN.md: ntfy alerts with recoveries (auth rejected, poll failing, device silent, battery low), healthchecks.io dead-man ping, daily backup in poller housekeeping, `shelog alert-drill` (wave 4)
+- [ ] 02-06-PLAN.md: DEPLOYMENT.md/README, CLAUDE.md files aligned with the as-built stack, restore rehearsal on a scratch copy, local export, final redeploy (wave 5)
+- [ ] 02-07-PLAN.md: Owner production checks (import, alert drill, restart, reboot, backup) and phase acceptance; the phase stays open until a VPS reboot is observed (wave 6)
 **Owner action required**:
   - Create the public GitHub repo `ciakval/shelog` and push. No remote exists yet.
   - Protect `main`, at least against force-push and deletion. The `production` environment only accepts protected branches.
