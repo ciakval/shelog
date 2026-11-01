@@ -47,8 +47,11 @@ def _walk(root: Path) -> Iterator[Path]:
             yield Path(dirpath) / name
 
 
-def _contains(path: Path, needles: tuple[bytes, ...]) -> bool:
-    """Chunked search whose chunks overlap by the longest needle, so splits are caught."""
+def _contains(path: Path, needles: tuple[bytes, ...]) -> bool | None:
+    """Chunked search whose chunks overlap by the longest needle, so splits are caught.
+
+    Returns None when the file could not be read: an unscanned file is not a clean file.
+    """
     overlap = max(len(n) for n in needles) - 1
     carry = b""
     try:
@@ -59,7 +62,7 @@ def _contains(path: Path, needles: tuple[bytes, ...]) -> bool:
                     return True
                 carry = window[-overlap:] if overlap else b""
     except OSError:
-        return False
+        return None
     return False
 
 
@@ -91,20 +94,25 @@ def run_check(
     data_dir: Path = Path("data"),
     stdout: TextIO | None = None,
 ) -> int:
-    """Print one summary line and one `hit:` line per leaking file. 0 = clean, 1 = hits."""
+    """Print one summary line, a `hit:` line per leaking file and an `unreadable:` line per
+    file that could not be scanned. 0 = clean, 1 = hits or unscanned files (fail closed)."""
     out = sys.stdout if stdout is None else stdout  # resolved per call so capture works
     needles = _needles(settings.auth_key.reveal())
     targets = _targets(settings, data_dir)
-    hits = [path for path in targets if _contains(path, needles)]
+    results = {path: _contains(path, needles) for path in targets}
+    hits = [path for path, found in results.items() if found]
+    unreadable = [path for path, found in results.items() if found is None]
     schema = _schema_version(settings.db_path)
     print(
         f"config: ok | devices: {len(devices)} | db schema: {schema}"
-        f" | leak scan: {len(targets)} files, {len(hits)} hits",
+        f" | leak scan: {len(targets)} files, {len(hits)} hits, {len(unreadable)} unreadable",
         file=out,
     )
     for path in hits:
         print(f"hit: {_display(path)}", file=out)
-    return 1 if hits else 0
+    for path in unreadable:
+        print(f"unreadable: {_display(path)}", file=out)
+    return 1 if hits or unreadable else 0
 
 
 def main(settings: Settings, devices: tuple[Device, ...]) -> int:

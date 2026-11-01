@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import io
 import logging
+import os
 import re
 import sqlite3
 import urllib.parse
@@ -126,6 +127,34 @@ def test_clean_data_dir_reports_zero_hits(
     assert "db schema: v1" in lines[0]
     assert "0 hits" in lines[0]
     assert re.search(r"leak scan: \d+ files", lines[0])
+    for form in _forms(sentinel_key):
+        assert form not in text
+
+
+@pytest.mark.skipif(os.geteuid() == 0, reason="root ignores file permissions")
+def test_unreadable_file_fails_the_scan_instead_of_counting_as_clean(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    test_settings: Settings,
+    test_devices: tuple[Device, ...],
+    sentinel_key: str,
+) -> None:
+    monkeypatch.chdir(tmp_path)
+    data = test_settings.db_path.parent
+    con = connect_rw(test_settings.db_path)
+    migrate(con)
+    con.close()
+    locked = data / "locked.log"
+    locked.write_text("nothing to see", encoding="utf-8")
+    locked.chmod(0o000)
+    try:
+        code, text = _scan(test_settings, test_devices, data)
+    finally:
+        locked.chmod(0o600)
+    assert code == 1
+    assert "0 hits, 1 unreadable" in text
+    assert "unreadable: " in text
+    assert "locked.log" in text
     for form in _forms(sentinel_key):
         assert form not in text
 
