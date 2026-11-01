@@ -1,0 +1,850 @@
+{
+  "_comment": "Hand-written synthetic cases derived from the shapes in v1_all_status.json. Not a capture.",
+  "envelopes": {
+    "absent_device": {
+      "data": {
+        "devices_status": {
+          "020000000001": {
+            "_sleeping": true,
+            "_updated": "2026-11-01 06:50:00",
+            "bat": {
+              "value": 90,
+              "voltage": 2.9
+            },
+            "getinfo": {
+              "fw_info": {
+                "device": "shellyht-000001",
+                "fw": "20230913-112531/v1.14.0-gcb84623"
+              }
+            },
+            "hum": {
+              "is_valid": true,
+              "value": 54.5
+            },
+            "is_valid": true,
+            "mac": "020000000001",
+            "sensor_error": 0,
+            "tmp": {
+              "is_valid": true,
+              "tC": 24.5,
+              "tF": 76.1,
+              "units": "C",
+              "value": 24.5
+            },
+            "unixtime": 1793515800
+          },
+          "020000000003": {
+            "_sleeping": true,
+            "_updated": "2026-11-01 06:50:00",
+            "bat": {
+              "value": 100,
+              "voltage": 3.0
+            },
+            "flood": false,
+            "is_valid": true,
+            "mac": "020000000003",
+            "rain_sensor": false,
+            "sensor_error": 0,
+            "tmp": {
+              "is_valid": true,
+              "tC": 24.6,
+              "tF": 76.3,
+              "units": "C",
+              "value": 24.6
+            },
+            "unixtime": 1793515800
+          }
+        },
+        "pending_notifications": {}
+      },
+      "isok": true
+    },
+    "empty_block": {
+      "data": {
+        "devices_status": {
+          "020000000001": {
+            "_sleeping": true,
+            "_updated": "2026-11-01 06:50:00",
+            "bat": {
+              "value": 90,
+              "voltage": 2.9
+            },
+            "getinfo": {
+              "fw_info": {
+                "device": "shellyht-000001",
+                "fw": "20230913-112531/v1.14.0-gcb84623"
+              }
+            },
+            "hum": {
+              "is_valid": true,
+              "value": 54.5
+            },
+            "is_valid": true,
+            "mac": "020000000001",
+            "sensor_error": 0,
+            "tmp": {
+              "is_valid": true,
+              "tC": 24.5,
+              "tF": 76.1,
+              "units": "C",
+              "value": 24.5
+            },
+            "unixtime": 1793515800
+          },
+          "020000000002": {},
+          "020000000003": {
+            "_sleeping": true,
+            "_updated": "2026-11-01 06:50:00",
+            "bat": {
+              "value": 100,
+              "voltage": 3.0
+            },
+            "flood": false,
+            "is_valid": true,
+            "mac": "020000000003",
+            "rain_sensor": false,
+            "sensor_error": 0,
+            "tmp": {
+              "is_valid": true,
+              "tC": 24.6,
+              "tF": 76.3,
+              "units": "C",
+              "value": 24.6
+            },
+            "unixtime": 1793515800
+          }
+        },
+        "pending_notifications": {}
+      },
+      "isok": true
+    },
+    "empty_list": {
+      "data": {
+        "devices_status": [],
+        "pending_notifications": {}
+      },
+      "isok": true
+    }
+  },
+  "flood_gen1": {
+    "baseline": {
+      "_sleeping": true,
+      "_updated": "2026-11-01 06:50:00",
+      "bat": {
+        "value": 100,
+        "voltage": 3.0
+      },
+      "flood": false,
+      "is_valid": true,
+      "mac": "020000000003",
+      "rain_sensor": false,
+      "sensor_error": 0,
+      "tmp": {
+        "is_valid": true,
+        "tC": 24.6,
+        "tF": 76.3,
+        "units": "C",
+        "value": 24.6
+      },
+      "unixtime": 1793515800
+    },
+    "flood_true": {
+      "_sleeping": true,
+      "_updated": "2026-11-01 06:50:00",
+      "bat": {
+        "value": 100,
+        "voltage": 3.0
+      },
+      "flood": true,
+      "is_valid": true,
+      "mac": "020000000003",
+      "rain_sensor": false,
+      "sensor_error": 0,
+      "tmp": {
+        "is_valid": true,
+        "tC": 24.6,
+        "tF": 76.3,
+        "units": "C",
+        "value": 24.6
+      },
+      "unixtime": 1793515800
+    },
+    "flood_yes": {
+      "_sleeping": true,
+      "_updated": "2026-11-01 06:50:00",
+      "bat": {
+        "value": 100,
+        "voltage": 3.0
+      },
+      "flood": "yes",
+      "is_valid": true,
+      "mac": "020000000003",
+      "rain_sensor": false,
+      "sensor_error": 0,
+      "tmp": {
+        "is_valid": true,
+        "tC": 24.6,
+        "tF": 76.3,
+        "units": "C",
+        "value": 24.6
+      },
+      "unixtime": 1793515800
+    },
+    "tmp_invalid_value": {
+      "_sleeping": true,
+      "_updated": "2026-11-01 06:50:00",
+      "bat": {
+        "value": 100,
+        "voltage": 3.0
+      },
+      "flood": false,
+      "is_valid": true,
+      "mac": "020000000003",
+      "rain_sensor": false,
+      "sensor_error": 0,
+      "tmp": {
+        "is_valid": true,
+        "tC": -80,
+        "tF": 76.3,
+        "units": "C",
+        "value": 24.6
+      },
+      "unixtime": 1793515800
+    }
+  },
+  "ht_gen1": {
+    "baseline": {
+      "_sleeping": true,
+      "_updated": "2026-11-01 06:50:00",
+      "bat": {
+        "value": 90,
+        "voltage": 2.9
+      },
+      "getinfo": {
+        "fw_info": {
+          "device": "shellyht-000001",
+          "fw": "20230913-112531/v1.14.0-gcb84623"
+        }
+      },
+      "hum": {
+        "is_valid": true,
+        "value": 54.5
+      },
+      "is_valid": true,
+      "mac": "020000000001",
+      "sensor_error": 0,
+      "tmp": {
+        "is_valid": true,
+        "tC": 24.5,
+        "tF": 76.1,
+        "units": "C",
+        "value": 24.5
+      },
+      "unixtime": 1793515800
+    },
+    "bat_null": {
+      "_sleeping": true,
+      "_updated": "2026-11-01 06:50:00",
+      "bat": {
+        "value": null,
+        "voltage": 2.9
+      },
+      "getinfo": {
+        "fw_info": {
+          "device": "shellyht-000001",
+          "fw": "20230913-112531/v1.14.0-gcb84623"
+        }
+      },
+      "hum": {
+        "is_valid": true,
+        "value": 54.5
+      },
+      "is_valid": true,
+      "mac": "020000000001",
+      "sensor_error": 0,
+      "tmp": {
+        "is_valid": true,
+        "tC": 24.5,
+        "tF": 76.1,
+        "units": "C",
+        "value": 24.5
+      },
+      "unixtime": 1793515800
+    },
+    "hum_120": {
+      "_sleeping": true,
+      "_updated": "2026-11-01 06:50:00",
+      "bat": {
+        "value": 90,
+        "voltage": 2.9
+      },
+      "getinfo": {
+        "fw_info": {
+          "device": "shellyht-000001",
+          "fw": "20230913-112531/v1.14.0-gcb84623"
+        }
+      },
+      "hum": {
+        "is_valid": true,
+        "value": 120
+      },
+      "is_valid": true,
+      "mac": "020000000001",
+      "sensor_error": 0,
+      "tmp": {
+        "is_valid": true,
+        "tC": 24.5,
+        "tF": 76.1,
+        "units": "C",
+        "value": 24.5
+      },
+      "unixtime": 1793515800
+    },
+    "hum_int_100": {
+      "_sleeping": true,
+      "_updated": "2026-11-01 06:50:00",
+      "bat": {
+        "value": 90,
+        "voltage": 2.9
+      },
+      "getinfo": {
+        "fw_info": {
+          "device": "shellyht-000001",
+          "fw": "20230913-112531/v1.14.0-gcb84623"
+        }
+      },
+      "hum": {
+        "is_valid": true,
+        "value": 100
+      },
+      "is_valid": true,
+      "mac": "020000000001",
+      "sensor_error": 0,
+      "tmp": {
+        "is_valid": true,
+        "tC": 24.5,
+        "tF": 76.1,
+        "units": "C",
+        "value": 24.5
+      },
+      "unixtime": 1793515800
+    },
+    "hum_invalid": {
+      "_sleeping": true,
+      "_updated": "2026-11-01 06:50:00",
+      "bat": {
+        "value": 90,
+        "voltage": 2.9
+      },
+      "getinfo": {
+        "fw_info": {
+          "device": "shellyht-000001",
+          "fw": "20230913-112531/v1.14.0-gcb84623"
+        }
+      },
+      "hum": {
+        "is_valid": false,
+        "value": 54.5
+      },
+      "is_valid": true,
+      "mac": "020000000001",
+      "sensor_error": 0,
+      "tmp": {
+        "is_valid": true,
+        "tC": 24.5,
+        "tF": 76.1,
+        "units": "C",
+        "value": 24.5
+      },
+      "unixtime": 1793515800
+    },
+    "old_firmware": {
+      "_sleeping": true,
+      "_updated": "2026-11-01 06:50:00",
+      "bat": {
+        "value": 90,
+        "voltage": 2.9
+      },
+      "hum": {
+        "is_valid": true,
+        "value": 54.5
+      },
+      "is_valid": true,
+      "mac": "020000000001",
+      "time": "",
+      "tmp": {
+        "is_valid": true,
+        "tC": 24.5,
+        "tF": 76.1,
+        "units": "C",
+        "value": 24.5
+      },
+      "unixtime": 0
+    },
+    "rh_100_4": {
+      "_sleeping": true,
+      "_updated": "2026-11-01 06:50:00",
+      "bat": {
+        "value": 90,
+        "voltage": 2.9
+      },
+      "getinfo": {
+        "fw_info": {
+          "device": "shellyht-000001",
+          "fw": "20230913-112531/v1.14.0-gcb84623"
+        }
+      },
+      "hum": {
+        "is_valid": true,
+        "value": 100.4
+      },
+      "is_valid": true,
+      "mac": "020000000001",
+      "sensor_error": 0,
+      "tmp": {
+        "is_valid": true,
+        "tC": 24.5,
+        "tF": 76.1,
+        "units": "C",
+        "value": 24.5
+      },
+      "unixtime": 1793515800
+    },
+    "sensor_error_1": {
+      "_sleeping": true,
+      "_updated": "2026-11-01 06:50:00",
+      "bat": {
+        "value": 90,
+        "voltage": 2.9
+      },
+      "getinfo": {
+        "fw_info": {
+          "device": "shellyht-000001",
+          "fw": "20230913-112531/v1.14.0-gcb84623"
+        }
+      },
+      "hum": {
+        "is_valid": true,
+        "value": 54.5
+      },
+      "is_valid": true,
+      "mac": "020000000001",
+      "sensor_error": 1,
+      "tmp": {
+        "is_valid": true,
+        "tC": 24.5,
+        "tF": 76.1,
+        "units": "C",
+        "value": 24.5
+      },
+      "unixtime": 1793515800
+    },
+    "tc_150": {
+      "_sleeping": true,
+      "_updated": "2026-11-01 06:50:00",
+      "bat": {
+        "value": 90,
+        "voltage": 2.9
+      },
+      "getinfo": {
+        "fw_info": {
+          "device": "shellyht-000001",
+          "fw": "20230913-112531/v1.14.0-gcb84623"
+        }
+      },
+      "hum": {
+        "is_valid": true,
+        "value": 54.5
+      },
+      "is_valid": true,
+      "mac": "020000000001",
+      "sensor_error": 0,
+      "tmp": {
+        "is_valid": true,
+        "tC": 150,
+        "tF": 76.1,
+        "units": "C",
+        "value": 24.5
+      },
+      "unixtime": 1793515800
+    },
+    "tc_bool": {
+      "_sleeping": true,
+      "_updated": "2026-11-01 06:50:00",
+      "bat": {
+        "value": 90,
+        "voltage": 2.9
+      },
+      "getinfo": {
+        "fw_info": {
+          "device": "shellyht-000001",
+          "fw": "20230913-112531/v1.14.0-gcb84623"
+        }
+      },
+      "hum": {
+        "is_valid": true,
+        "value": 54.5
+      },
+      "is_valid": true,
+      "mac": "020000000001",
+      "sensor_error": 0,
+      "tmp": {
+        "is_valid": true,
+        "tC": true,
+        "tF": 76.1,
+        "units": "C",
+        "value": 24.5
+      },
+      "unixtime": 1793515800
+    },
+    "tc_nan": {
+      "_sleeping": true,
+      "_updated": "2026-11-01 06:50:00",
+      "bat": {
+        "value": 90,
+        "voltage": 2.9
+      },
+      "getinfo": {
+        "fw_info": {
+          "device": "shellyht-000001",
+          "fw": "20230913-112531/v1.14.0-gcb84623"
+        }
+      },
+      "hum": {
+        "is_valid": true,
+        "value": 54.5
+      },
+      "is_valid": true,
+      "mac": "020000000001",
+      "sensor_error": 0,
+      "tmp": {
+        "is_valid": true,
+        "tC": NaN,
+        "tF": 76.1,
+        "units": "C",
+        "value": 24.5
+      },
+      "unixtime": 1793515800
+    },
+    "tmp_invalid": {
+      "_sleeping": true,
+      "_updated": "2026-11-01 06:50:00",
+      "bat": {
+        "value": 90,
+        "voltage": 2.9
+      },
+      "getinfo": {
+        "fw_info": {
+          "device": "shellyht-000001",
+          "fw": "20230913-112531/v1.14.0-gcb84623"
+        }
+      },
+      "hum": {
+        "is_valid": true,
+        "value": 54.5
+      },
+      "is_valid": true,
+      "mac": "020000000001",
+      "sensor_error": 0,
+      "tmp": {
+        "is_valid": false,
+        "tC": 24.5,
+        "tF": 76.1,
+        "units": "C",
+        "value": 24.5
+      },
+      "unixtime": 1793515800
+    },
+    "tmp_null": {
+      "_sleeping": true,
+      "_updated": "2026-11-01 06:50:00",
+      "bat": {
+        "value": 90,
+        "voltage": 2.9
+      },
+      "getinfo": {
+        "fw_info": {
+          "device": "shellyht-000001",
+          "fw": "20230913-112531/v1.14.0-gcb84623"
+        }
+      },
+      "hum": {
+        "is_valid": true,
+        "value": 54.5
+      },
+      "is_valid": true,
+      "mac": "020000000001",
+      "sensor_error": 0,
+      "tmp": null,
+      "unixtime": 1793515800
+    },
+    "updated_absent": {
+      "_sleeping": true,
+      "bat": {
+        "value": 90,
+        "voltage": 2.9
+      },
+      "getinfo": {
+        "fw_info": {
+          "device": "shellyht-000001",
+          "fw": "20230913-112531/v1.14.0-gcb84623"
+        }
+      },
+      "hum": {
+        "is_valid": true,
+        "value": 54.5
+      },
+      "is_valid": true,
+      "mac": "020000000001",
+      "sensor_error": 0,
+      "tmp": {
+        "is_valid": true,
+        "tC": 24.5,
+        "tF": 76.1,
+        "units": "C",
+        "value": 24.5
+      },
+      "unixtime": 1793515800
+    },
+    "updated_garbage": {
+      "_sleeping": true,
+      "_updated": "yesterday",
+      "bat": {
+        "value": 90,
+        "voltage": 2.9
+      },
+      "getinfo": {
+        "fw_info": {
+          "device": "shellyht-000001",
+          "fw": "20230913-112531/v1.14.0-gcb84623"
+        }
+      },
+      "hum": {
+        "is_valid": true,
+        "value": 54.5
+      },
+      "is_valid": true,
+      "mac": "020000000001",
+      "sensor_error": 0,
+      "tmp": {
+        "is_valid": true,
+        "tC": 24.5,
+        "tF": 76.1,
+        "units": "C",
+        "value": 24.5
+      },
+      "unixtime": 1793515800
+    },
+    "updated_garbage_type": {
+      "_sleeping": true,
+      "_updated": 12345,
+      "bat": {
+        "value": 90,
+        "voltage": 2.9
+      },
+      "getinfo": {
+        "fw_info": {
+          "device": "shellyht-000001",
+          "fw": "20230913-112531/v1.14.0-gcb84623"
+        }
+      },
+      "hum": {
+        "is_valid": true,
+        "value": 54.5
+      },
+      "is_valid": true,
+      "mac": "020000000001",
+      "sensor_error": 0,
+      "tmp": {
+        "is_valid": true,
+        "tC": 24.5,
+        "tF": 76.1,
+        "units": "C",
+        "value": 24.5
+      },
+      "unixtime": 1793515800
+    }
+  },
+  "ht_gen3": {
+    "baseline": {
+      "_sleeping": true,
+      "_updated": "2026-11-01 06:50:00",
+      "devicepower:0": {
+        "battery": {
+          "V": 6.0,
+          "percent": 90
+        },
+        "external": {
+          "present": false
+        },
+        "id": 0
+      },
+      "humidity:0": {
+        "id": 0,
+        "rh": 49.9
+      },
+      "id": "020000000006",
+      "sys": {
+        "mac": "020000000006",
+        "unixtime": 1793515800,
+        "wakeup_period": 7200
+      },
+      "temperature:0": {
+        "id": 0,
+        "tC": 25.2,
+        "tF": 77.4
+      },
+      "ts": 1793515800.86
+    },
+    "clock_skew_600s": {
+      "_sleeping": true,
+      "_updated": "2026-11-01 06:50:00",
+      "devicepower:0": {
+        "battery": {
+          "V": 6.0,
+          "percent": 90
+        },
+        "external": {
+          "present": false
+        },
+        "id": 0
+      },
+      "humidity:0": {
+        "id": 0,
+        "rh": 49.9
+      },
+      "id": "020000000006",
+      "sys": {
+        "mac": "020000000006",
+        "unixtime": 1793516400,
+        "wakeup_period": 7200
+      },
+      "temperature:0": {
+        "id": 0,
+        "tC": 25.2,
+        "tF": 77.4
+      },
+      "ts": 1793515800.86
+    },
+    "clock_within_tolerance": {
+      "_sleeping": true,
+      "_updated": "2026-11-01 06:50:00",
+      "devicepower:0": {
+        "battery": {
+          "V": 6.0,
+          "percent": 90
+        },
+        "external": {
+          "present": false
+        },
+        "id": 0
+      },
+      "humidity:0": {
+        "id": 0,
+        "rh": 49.9
+      },
+      "id": "020000000006",
+      "sys": {
+        "mac": "020000000006",
+        "unixtime": 1793515860,
+        "wakeup_period": 7200
+      },
+      "temperature:0": {
+        "id": 0,
+        "tC": 25.2,
+        "tF": 77.4
+      },
+      "ts": 1793515800.86
+    },
+    "rh_null": {
+      "_sleeping": true,
+      "_updated": "2026-11-01 06:50:00",
+      "devicepower:0": {
+        "battery": {
+          "V": 6.0,
+          "percent": 90
+        },
+        "external": {
+          "present": false
+        },
+        "id": 0
+      },
+      "humidity:0": {
+        "id": 0,
+        "rh": null
+      },
+      "id": "020000000006",
+      "sys": {
+        "mac": "020000000006",
+        "unixtime": 1793515800,
+        "wakeup_period": 7200
+      },
+      "temperature:0": {
+        "id": 0,
+        "tC": 25.2,
+        "tF": 77.4
+      },
+      "ts": 1793515800.86
+    },
+    "rh_string": {
+      "_sleeping": true,
+      "_updated": "2026-11-01 06:50:00",
+      "devicepower:0": {
+        "battery": {
+          "V": 6.0,
+          "percent": 90
+        },
+        "external": {
+          "present": false
+        },
+        "id": 0
+      },
+      "humidity:0": {
+        "id": 0,
+        "rh": "49.9"
+      },
+      "id": "020000000006",
+      "sys": {
+        "mac": "020000000006",
+        "unixtime": 1793515800,
+        "wakeup_period": 7200
+      },
+      "temperature:0": {
+        "id": 0,
+        "tC": 25.2,
+        "tF": 77.4
+      },
+      "ts": 1793515800.86
+    },
+    "tc_null": {
+      "_sleeping": true,
+      "_updated": "2026-11-01 06:50:00",
+      "devicepower:0": {
+        "battery": {
+          "V": 6.0,
+          "percent": 90
+        },
+        "external": {
+          "present": false
+        },
+        "id": 0
+      },
+      "humidity:0": {
+        "id": 0,
+        "rh": 49.9
+      },
+      "id": "020000000006",
+      "sys": {
+        "mac": "020000000006",
+        "unixtime": 1793515800,
+        "wakeup_period": 7200
+      },
+      "temperature:0": {
+        "id": 0,
+        "tC": null,
+        "tF": 77.4
+      },
+      "ts": 1793515800.86
+    }
+  }
+}

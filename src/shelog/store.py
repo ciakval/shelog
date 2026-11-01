@@ -6,7 +6,7 @@ import sqlite3
 from collections.abc import Sequence
 from dataclasses import dataclass
 
-from shelog.shelly.parse import Report
+from shelog.shelly.parse import TS_SOURCE_POLL, Report
 
 MIN_PLAUSIBLE_TS = 1_577_836_800  # 2020-01-01: earlier values are garbage (e.g. 0)
 MAX_FUTURE_SKEW_S = 120
@@ -37,7 +37,15 @@ class Decision:
 
 
 def decide(last: LastState | None, report: Report, now: int) -> Decision:
-    """Insert only when the report time advanced; never reject a report for being old."""
+    """Insert only when the report time advanced; never reject a report for being old.
+
+    A report without a cloud time (ts_source 'poll') is stamped with `now` and inserted only
+    when its values differ from the last stored row.
+    """
+    if report.ts_source == TS_SOURCE_POLL:
+        if last is None or _values(last) != _values(report):
+            return Decision(INSERT, now)
+        return Decision(UNCHANGED, now)
     ts = report.ts
     if ts is None or not plausible_ts(ts, now):
         return Decision(IMPLAUSIBLE, None)
@@ -46,6 +54,10 @@ def decide(last: LastState | None, report: Report, now: int) -> Decision:
     if ts == last.ts:
         return Decision(UNCHANGED, ts)
     return Decision(REGRESSED, ts)
+
+
+def _values(state: LastState | Report) -> tuple[float | int | None, ...]:
+    return (state.t_c, state.rh, state.battery, state.flood)
 
 
 @dataclass(frozen=True)
