@@ -29,13 +29,13 @@ Decimal phases appear between their surrounding integers in numeric order.
   2. For each model, a document records which field holds the real report time (`ts_source`, with its timezone meaning) and each device's reporting settings (wake period, thresholds, any on-device offset). Each device in `devices.toml` has a silence threshold based on those settings, and only `devices.example.toml` is in the repo.
   3. After running locally against the real account for at least an hour, the poller has sent one batched request per interval and never more than 1 request per second. The database holds a new row only when a device's report time moved forward, with raw uncalibrated T, RH, battery and flood values, sensor-error nulls kept as null, and the raw JSON saved alongside. Implausible timestamps were rejected and counted.
   4. A wrong key, a simulated HTTP 429 with Retry-After, and a network outage each cause capped backoff and a poll-log row with an outcome category. A wrong key also shows up as a separate "auth rejected" state. A search of the logs, error text and database finds no trace of the auth key.
-**Plans**: 3/8 plans executed
+**Plans**: 4/8 plans executed
 
 Plans:
 - [x] 01-01-PLAN.md: Tracer. Scaffold (Python 3.13, uv, zero runtime deps), config, rate-guarded client and a live `shelog probe` baseline run from git worktrees via `scripts/live.sh` (wave 1)
 - [x] 01-02-PLAN.md: Tracer, continued. End-to-end `shelog poll --once`: schema 0001, parse, dedup, real all_status to SQLite (wave 2)
 - [x] 01-03-PLAN.md: Sanitizer, sanitized real fixtures, real-id and configured-key scans over every tracked file, and complete parse/dedup rules (wave 3)
-- [ ] 01-04-PLAN.md: Resilient poll loop: classifier proven on real sockets, synthetic rate-limit fixture, capped backoff, Retry-After, auth state, single-instance lock (wave 3)
+- [x] 01-04-PLAN.md: Resilient poll loop: classifier proven on real sockets, synthetic rate-limit fixture, capped backoff, Retry-After, auth state, single-instance lock (wave 3)
 - [ ] 01-05-PLAN.md: Secret hygiene and strict config: redacting logs, the `shelog check` leak scan, strict devices.toml, example files (wave 3)
 - [ ] 01-06-PLAN.md: Probe step matrix (v1/v2, error group, dummy-key wrong host, no bursts) and the sanitized `--save-fixtures` export (wave 4)
 - [ ] 01-07-PLAN.md: Live probe capture; classifier pinned to real envelopes; docs/shelly-api.md; per-device silence thresholds with provenance; COVERAGE re-validation (wave 5)
@@ -112,7 +112,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Probe & Core Collector | 3/8 | In Progress | - |
+| 1. Probe & Core Collector | 4/8 | In Progress | - |
 | 2. Collection Live on Bombur | 0/TBD | Not started | - |
 | 3. Outdoor Weather | 0/TBD | Not started | - |
 | 4. Metrics & Read API | 0/TBD | Not started | - |
