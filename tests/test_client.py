@@ -141,15 +141,21 @@ def test_error_categories_are_a_closed_slug_set():
     assert all(re.fullmatch(r"[a-z_0-9]+", c) for c in ERROR_CATEGORIES)
 
 
-def test_bad_response_keeps_an_excerpt_of_at_most_200_chars_others_do_not():
-    long_body = b"x" * 500
-    outcome = classify(RawResponse(200, {}, long_body), NOW)
+def test_bad_response_carries_only_size_and_kind_never_content():
+    outcome = classify(RawResponse(200, {}, b"x" * 500), NOW)
     assert outcome.category == BAD_RESPONSE
-    assert outcome.body_excerpt == "x" * 200
-    assert classify(RawResponse(200, {}, b"\xff\xfe not json"), NOW).body_excerpt is not None
-    assert classify(RawResponse(503, {}, b"body"), NOW).body_excerpt is None
-    assert classify(_json(_envelope({"a": {}})), NOW).body_excerpt is None
-    assert classify(RawResponse(429, {}, b"body"), NOW).body_excerpt is None
+    assert outcome.body_shape == "500 bytes, not json"
+    assert "x" not in outcome.body_shape.replace("bytes", "")
+    assert classify(RawResponse(200, {}, b"\xff\xfe not json"), NOW).body_shape is not None
+    assert classify(RawResponse(200, {}, b"[1, 2]"), NOW).body_shape == "6 bytes, json list"
+    leaky = _json({"isok": False, "data": {"devices_status": {"020000000001": {}}}})
+    shape = classify(leaky, NOW).body_shape
+    assert shape is not None
+    assert "020000000001" not in shape
+    assert "devices_status" not in shape
+    assert classify(RawResponse(503, {}, b"body"), NOW).body_shape is None
+    assert classify(_json(_envelope({"a": {}})), NOW).body_shape is None
+    assert classify(RawResponse(429, {}, b"body"), NOW).body_shape is None
 
 
 _RATE_CASES = json.loads((FIXTURES / "synthetic_rate_limit.json").read_text(encoding="utf-8"))[

@@ -211,8 +211,8 @@ class Poller:
             )
             store.write_cycle(self._con, record, [])
             log.warning("poll failed: %s", outcome.category)
-            if outcome.category == BAD_RESPONSE and outcome.body_excerpt is not None:
-                log.warning("unexpected response body (truncated): %r", outcome.body_excerpt)
+            if outcome.category == BAD_RESPONSE and outcome.body_shape is not None:
+                log.warning("unexpected response body: %s", outcome.body_shape)
             return CycleResult(outcome, record)
 
         rows: list[store.ReadingRow] = []

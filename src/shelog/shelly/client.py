@@ -54,7 +54,7 @@ class Outcome:
     latency_ms: int | None = None
     retry_after_s: float | None = None
     devices: Mapping[str, Any] | None = None
-    body_excerpt: str | None = None  # bad_response only; log-only, never stored
+    body_shape: str | None = None  # bad_response only: size and kind, never content
 
     @property
     def ok(self) -> bool:
@@ -97,12 +97,23 @@ def _safe_json(body: bytes) -> dict[str, Any] | None:
     return doc if isinstance(doc, dict) else None
 
 
-EXCERPT_CHARS = 200
+def _body_shape(body: bytes) -> str:
+    """Describe an unexpected body by size and kind only.
+
+    The content is never logged: a malformed all_status envelope starts with real device
+    ids and MACs, which must not reach logs.
+    """
+    try:
+        doc = json.loads(body, parse_constant=_reject_constant)
+    except (ValueError, RecursionError):
+        kind = "not json"
+    else:
+        kind = f"json {type(doc).__name__}"
+    return f"{len(body)} bytes, {kind}"
 
 
 def _bad_response(raw: RawResponse) -> Outcome:
-    excerpt = raw.body[: EXCERPT_CHARS * 4].decode("utf-8", errors="replace")[:EXCERPT_CHARS]
-    return Outcome(BAD_RESPONSE, raw.status, body_excerpt=excerpt)
+    return Outcome(BAD_RESPONSE, raw.status, body_shape=_body_shape(raw.body))
 
 
 def classify(raw: RawResponse, now: float) -> Outcome:

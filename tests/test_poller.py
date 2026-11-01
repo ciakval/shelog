@@ -284,16 +284,17 @@ def test_device_never_stored_triggers_one_warning_by_name(rig, envelope, caplog)
     assert HT1 not in caplog.text
 
 
-def test_bad_response_logs_a_truncated_excerpt_and_stores_nothing_of_it(rig, caplog):
+def test_bad_response_logs_only_size_and_kind_and_stores_nothing_of_it(rig, caplog):
     poller, send, con, _ = rig
-    send.queue(RawResponse(200, {}, b"x" * 500))
+    body = json.dumps({"isok": False, "data": {"devices_status": {HT1: {"mac": "AABBCCDDEEFF"}}}})
+    send.queue(RawResponse(200, {}, body.encode()))
     caplog.set_level(logging.WARNING)
     poller.step(threading.Event())
 
     text = " ".join(r.getMessage() for r in caplog.records)
-    assert "unexpected response body (truncated)" in text
-    assert "x" * 200 in text
-    assert "x" * 201 not in text
+    assert f"unexpected response body: {len(body)} bytes, json dict" in text
+    assert HT1 not in caplog.text
+    assert "AABBCCDDEEFF" not in caplog.text
     row = con.execute("SELECT ok, error FROM poll_log").fetchall()
     assert row == [(0, "bad_response")]
 
