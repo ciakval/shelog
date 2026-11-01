@@ -1,0 +1,1293 @@
+[
+  {
+    "code": "SHHT-1",
+    "gen": "G1",
+    "id": "000003",
+    "online": 1,
+    "settings": {
+      "_gip_c": "CZ",
+      "_gip_s": "fixture-region",
+      "_updated": "2026-11-01 07:37:36",
+      "actions": {
+        "active": false,
+        "names": [
+          "report_url",
+          "temp_over_url",
+          "temp_under_url",
+          "hum_over_url",
+          "hum_under_url"
+        ]
+      },
+      "allow_cross_origin": false,
+      "build_info": {
+        "build_id": "20230913-112531/v1.14.0-gcb84623",
+        "build_timestamp": "2023-09-13T11:25:31Z",
+        "build_version": "1.0"
+      },
+      "cloud": {
+        "connected": true,
+        "enabled": true
+      },
+      "coiot": {
+        "enabled": true,
+        "peer": "",
+        "update_period": 15
+      },
+      "debug_enable": false,
+      "device": {
+        "hostname": "fixture-ssid-5",
+        "mac": "020000000003",
+        "sleep_mode": true,
+        "type": "SHHT-1"
+      },
+      "discoverable": false,
+      "external_power": 0,
+      "fw": "20230913-112531/v1.14.0-gcb84623",
+      "humidity_offset": 0,
+      "lat": 0,
+      "lng": 0,
+      "login": {
+        "enabled": false,
+        "unprotected": false,
+        "username": "admin"
+      },
+      "mqtt": {
+        "clean_session": true,
+        "enable": false,
+        "id": "fixture-ssid-5",
+        "keep_alive": 60,
+        "max_qos": 0,
+        "reconnect_timeout_max": 60,
+        "reconnect_timeout_min": 2,
+        "retain": false,
+        "server": "192.0.2.8:1883",
+        "update_period": 30,
+        "user": ""
+      },
+      "name": null,
+      "pin_code": "",
+      "pon_wifi_reset": false,
+      "sensors": {
+        "humidity_threshold": 0.5,
+        "temperature_threshold": 0.5,
+        "temperature_unit": "C"
+      },
+      "sleep_mode": {
+        "period": 12,
+        "unit": "h"
+      },
+      "sntp": {
+        "enabled": true,
+        "server": "time.google.com"
+      },
+      "temperature_offset": 0,
+      "time": "",
+      "timezone": "Europe/Prague",
+      "tz_dst": false,
+      "tz_dst_auto": true,
+      "tz_utc_offset": 3600,
+      "tzautodetect": true,
+      "unixtime": 0,
+      "wifi_ap": {
+        "enabled": false,
+        "key": "",
+        "ssid": "fixture-ssid-5"
+      },
+      "wifi_sta": {
+        "dns": null,
+        "enabled": true,
+        "gw": null,
+        "ip": null,
+        "ipv4_method": "dhcp",
+        "mask": null,
+        "ssid": "fixture-ssid-1"
+      },
+      "wifi_sta1": {
+        "dns": null,
+        "enabled": false,
+        "gw": null,
+        "ip": null,
+        "ipv4_method": "dhcp",
+        "mask": null,
+        "ssid": null
+      }
+    },
+    "status": {
+      "_updated": "2026-11-01 07:37:51",
+      "act_reasons": [
+        "sensor"
+      ],
+      "actions_stats": {
+        "skipped": 0
+      },
+      "bat": {
+        "value": 94,
+        "voltage": 2.93
+      },
+      "cfg_changed_cnt": 0,
+      "cloud": {
+        "connected": true,
+        "enabled": true
+      },
+      "connect_retries": 0,
+      "fs_free": 153863,
+      "fs_size": 233681,
+      "getinfo": {
+        "fw_info": {
+          "device": "fixture-ssid-5",
+          "fw": "20230913-112531/v1.14.0-gcb84623"
+        }
+      },
+      "has_update": false,
+      "hum": {
+        "is_valid": true,
+        "value": 100
+      },
+      "is_valid": true,
+      "mac": "020000000003",
+      "mqtt": {
+        "connected": false
+      },
+      "ram_free": 42136,
+      "ram_total": 52384,
+      "sensor_error": 0,
+      "serial": 2,
+      "time": "08:37",
+      "tmp": {
+        "is_valid": true,
+        "tC": 25,
+        "tF": 77,
+        "units": "C",
+        "value": 25
+      },
+      "unixtime": 1793518671,
+      "update": {
+        "has_update": false,
+        "new_version": "",
+        "old_version": "20230913-112531/v1.14.0-gcb84623",
+        "status": "unknown"
+      },
+      "uptime": 17,
+      "wifi_sta": {
+        "connected": true,
+        "ip": "192.0.2.5",
+        "rssi": -65,
+        "ssid": "fixture-ssid-1"
+      }
+    },
+    "type": "sensor"
+  },
+  {
+    "code": "SHHT-1",
+    "gen": "G1",
+    "id": "020000000002",
+    "online": 1,
+    "settings": {
+      "_gip_c": "CZ",
+      "_gip_s": "fixture-region",
+      "_updated": "2026-11-01 07:36:30",
+      "actions": {
+        "active": false,
+        "names": [
+          "report_url",
+          "temp_over_url",
+          "temp_under_url",
+          "hum_over_url",
+          "hum_under_url"
+        ]
+      },
+      "allow_cross_origin": false,
+      "build_info": {
+        "build_id": "20230913-112531/v1.14.0-gcb84623",
+        "build_timestamp": "2023-09-13T11:25:31Z",
+        "build_version": "1.0"
+      },
+      "cloud": {
+        "connected": true,
+        "enabled": true
+      },
+      "coiot": {
+        "enabled": true,
+        "peer": "",
+        "update_period": 15
+      },
+      "debug_enable": false,
+      "device": {
+        "hostname": "fixture-ssid-4",
+        "mac": "020000000002",
+        "sleep_mode": true,
+        "type": "SHHT-1"
+      },
+      "discoverable": false,
+      "external_power": 0,
+      "fw": "20230913-112531/v1.14.0-gcb84623",
+      "humidity_offset": 0,
+      "lat": 0,
+      "lng": 0,
+      "login": {
+        "enabled": false,
+        "unprotected": false,
+        "username": "admin"
+      },
+      "mqtt": {
+        "clean_session": true,
+        "enable": false,
+        "id": "fixture-ssid-4",
+        "keep_alive": 60,
+        "max_qos": 0,
+        "reconnect_timeout_max": 60,
+        "reconnect_timeout_min": 2,
+        "retain": false,
+        "server": "192.0.2.8:1883",
+        "update_period": 30,
+        "user": ""
+      },
+      "name": null,
+      "pin_code": "",
+      "pon_wifi_reset": false,
+      "sensors": {
+        "humidity_threshold": 0.5,
+        "temperature_threshold": 0.5,
+        "temperature_unit": "C"
+      },
+      "sleep_mode": {
+        "period": 12,
+        "unit": "h"
+      },
+      "sntp": {
+        "enabled": true,
+        "server": "time.google.com"
+      },
+      "temperature_offset": 0,
+      "time": "",
+      "timezone": "Europe/Prague",
+      "tz_dst": false,
+      "tz_dst_auto": true,
+      "tz_utc_offset": 3600,
+      "tzautodetect": true,
+      "unixtime": 0,
+      "wifi_ap": {
+        "enabled": false,
+        "key": "",
+        "ssid": "fixture-ssid-4"
+      },
+      "wifi_sta": {
+        "dns": null,
+        "enabled": true,
+        "gw": null,
+        "ip": null,
+        "ipv4_method": "dhcp",
+        "mask": null,
+        "ssid": "fixture-ssid-1"
+      },
+      "wifi_sta1": {
+        "dns": null,
+        "enabled": false,
+        "gw": null,
+        "ip": null,
+        "ipv4_method": "dhcp",
+        "mask": null,
+        "ssid": null
+      }
+    },
+    "status": {
+      "_updated": "2026-11-01 07:36:45",
+      "act_reasons": [
+        "sensor"
+      ],
+      "actions_stats": {
+        "skipped": 0
+      },
+      "bat": {
+        "value": 95,
+        "voltage": 2.94
+      },
+      "cfg_changed_cnt": 0,
+      "cloud": {
+        "connected": true,
+        "enabled": true
+      },
+      "connect_retries": 0,
+      "fs_free": 155620,
+      "fs_size": 233681,
+      "getinfo": {
+        "fw_info": {
+          "device": "fixture-ssid-4",
+          "fw": "20230913-112531/v1.14.0-gcb84623"
+        }
+      },
+      "has_update": false,
+      "hum": {
+        "is_valid": true,
+        "value": 100
+      },
+      "is_valid": true,
+      "mac": "020000000002",
+      "mqtt": {
+        "connected": false
+      },
+      "ram_free": 42160,
+      "ram_total": 52384,
+      "sensor_error": 0,
+      "serial": 2,
+      "time": "08:36",
+      "tmp": {
+        "is_valid": true,
+        "tC": 25.25,
+        "tF": 77.45,
+        "units": "C",
+        "value": 25.25
+      },
+      "unixtime": 1793518604,
+      "update": {
+        "has_update": false,
+        "new_version": "",
+        "old_version": "20230913-112531/v1.14.0-gcb84623",
+        "status": "unknown"
+      },
+      "uptime": 18,
+      "wifi_sta": {
+        "connected": true,
+        "ip": "192.0.2.7",
+        "rssi": -67,
+        "ssid": "fixture-ssid-1"
+      }
+    },
+    "type": "sensor"
+  },
+  {
+    "code": "SHHT-1",
+    "gen": "G1",
+    "id": "000005",
+    "online": 1,
+    "settings": {
+      "_gip_c": "CZ",
+      "_gip_s": "fixture-region",
+      "_updated": "2026-11-01 07:36:55",
+      "actions": {
+        "active": false,
+        "names": [
+          "report_url",
+          "temp_over_url",
+          "temp_under_url",
+          "hum_over_url",
+          "hum_under_url"
+        ]
+      },
+      "allow_cross_origin": false,
+      "build_info": {
+        "build_id": "20210710-130145/v1.11.0-g12a9327-master",
+        "build_timestamp": "2021-07-10T13:01:45Z",
+        "build_version": "1.0"
+      },
+      "cloud": {
+        "connected": true,
+        "enabled": true
+      },
+      "coiot": {
+        "enabled": true,
+        "peer": "",
+        "update_period": 15
+      },
+      "debug_enable": false,
+      "device": {
+        "hostname": "fixture-ssid-7",
+        "mac": "020000000005",
+        "sleep_mode": true,
+        "type": "SHHT-1"
+      },
+      "discoverable": false,
+      "external_power": 0,
+      "fw": "20210710-130145/v1.11.0-g12a9327-master",
+      "humidity_offset": 0,
+      "lat": 0,
+      "lng": 0,
+      "login": {
+        "enabled": false,
+        "unprotected": false,
+        "username": "admin"
+      },
+      "mqtt": {
+        "clean_session": true,
+        "enable": false,
+        "id": "fixture-ssid-7",
+        "keep_alive": 60,
+        "max_qos": 0,
+        "reconnect_timeout_max": 60,
+        "reconnect_timeout_min": 2,
+        "retain": false,
+        "server": "192.0.2.8:1883",
+        "update_period": 30,
+        "user": ""
+      },
+      "name": null,
+      "pin_code": "",
+      "sensors": {
+        "humidity_threshold": 0.5,
+        "temperature_threshold": 0.5,
+        "temperature_unit": "C"
+      },
+      "sleep_mode": {
+        "period": 12,
+        "unit": "h"
+      },
+      "sntp": {
+        "enabled": true,
+        "server": "time.google.com"
+      },
+      "temperature_offset": 0,
+      "time": "",
+      "timezone": "Europe/Prague",
+      "tz_dst": false,
+      "tz_dst_auto": true,
+      "tz_utc_offset": 3600,
+      "tzautodetect": true,
+      "unixtime": 0,
+      "wifi_ap": {
+        "enabled": false,
+        "key": "",
+        "ssid": "fixture-ssid-7"
+      },
+      "wifi_sta": {
+        "dns": null,
+        "enabled": true,
+        "gw": null,
+        "ip": null,
+        "ipv4_method": "dhcp",
+        "mask": null,
+        "ssid": "fixture-ssid-1"
+      },
+      "wifi_sta1": {
+        "dns": null,
+        "enabled": false,
+        "gw": null,
+        "ip": null,
+        "ipv4_method": "dhcp",
+        "mask": null,
+        "ssid": null
+      }
+    },
+    "status": {
+      "_updated": "2026-11-01 07:37:00",
+      "act_reasons": [
+        "sensor"
+      ],
+      "actions_stats": {
+        "skipped": 0
+      },
+      "bat": {
+        "value": 80,
+        "voltage": 2.89
+      },
+      "cfg_changed_cnt": 0,
+      "cloud": {
+        "connected": false,
+        "enabled": true
+      },
+      "connect_retries": 0,
+      "fs_free": 156373,
+      "fs_size": 233681,
+      "has_update": false,
+      "hum": {
+        "is_valid": true,
+        "value": 54
+      },
+      "is_valid": true,
+      "mac": "020000000005",
+      "mqtt": {
+        "connected": false
+      },
+      "ram_free": 40968,
+      "ram_total": 50968,
+      "serial": 2,
+      "time": "",
+      "tmp": {
+        "is_valid": true,
+        "tC": 25.25,
+        "tF": 77.45,
+        "units": "C",
+        "value": 25.25
+      },
+      "unixtime": 0,
+      "update": {
+        "has_update": false,
+        "new_version": "",
+        "old_version": "20210710-130145/v1.11.0-g12a9327-master",
+        "status": "unknown"
+      },
+      "uptime": 6,
+      "wifi_sta": {
+        "connected": true,
+        "ip": "192.0.2.2",
+        "rssi": -48,
+        "ssid": "fixture-ssid-1"
+      }
+    },
+    "type": "sensor"
+  },
+  {
+    "code": "S3SN-0U12A",
+    "gen": "G2",
+    "id": "020000000006",
+    "online": 1,
+    "settings": {
+      "DeviceInfo": {
+        "app": "HTG3",
+        "auth_domain": null,
+        "auth_en": false,
+        "enhanced_security": false,
+        "fw_id": "20261026-122143/2.0.3-g4601943",
+        "gen": 3,
+        "id": "fixture-ssid-2",
+        "key": "fixture-device-key",
+        "mac": "020000000006",
+        "matter": false,
+        "model": "S3SN-0U12A",
+        "name": null,
+        "provision": "complete",
+        "slot": 0,
+        "ver": "2.0.3"
+      },
+      "_gip_c": "CZ",
+      "_gip_s": "fixture-region",
+      "_updated": "2026-11-01 06:25:58",
+      "ble": {
+        "rpc": {
+          "enable": false
+        }
+      },
+      "cloud": {
+        "enable": true,
+        "server": "shelly-000-xx.shelly.cloud:6022/jrpc"
+      },
+      "device": {
+        "gen": 2,
+        "sleep_mode": true,
+        "type": "S3SN-0U12A"
+      },
+      "devicepower:0": {},
+      "ht_ui": {
+        "clock": "24",
+        "temperature_unit": "C"
+      },
+      "humidity:0": {
+        "id": 0,
+        "name": null,
+        "offset": 0,
+        "report_thr": 1
+      },
+      "id": "020000000006",
+      "matter": {
+        "enable": false
+      },
+      "mqtt": {
+        "client_id": "fixture-ssid-2",
+        "enable": false,
+        "enable_control": true,
+        "enable_rpc": true,
+        "rpc_ntf": true,
+        "server": null,
+        "ssl_ca": null,
+        "status_ntf": false,
+        "topic_prefix": "fixture-ssid-2",
+        "use_client_cert": false,
+        "user": null
+      },
+      "sleep_mode": {
+        "period": 7200,
+        "unit": "s"
+      },
+      "sys": {
+        "cfg_rev": 14,
+        "debug": {
+          "file_level": null,
+          "file_log": {
+            "enable": false
+          },
+          "level": 2,
+          "mqtt": {
+            "enable": false
+          },
+          "udp": {
+            "addr": null
+          },
+          "websocket": {
+            "enable": false
+          }
+        },
+        "device": {
+          "discoverable": true,
+          "eco_mode": false,
+          "enhanced_security": false,
+          "fw_id": "20261026-122143/2.0.3-g4601943",
+          "mac": "020000000006",
+          "name": null,
+          "tls_check_cert_validity_time": true
+        },
+        "location": {
+          "lat": 0,
+          "lon": 0,
+          "tz": "Europe/Prague"
+        },
+        "rpc_udp": {
+          "dst_addr": null,
+          "listen_port": null
+        },
+        "sntp": {
+          "server": "time.cloudflare.com"
+        },
+        "ui_data": {}
+      },
+      "temperature:0": {
+        "id": 0,
+        "name": null,
+        "offset_C": 0,
+        "report_thr_C": 0.5
+      },
+      "wifi": {
+        "ap": {
+          "enable": false,
+          "is_open": true,
+          "ssid": "fixture-ssid-2"
+        },
+        "roam": {
+          "interval": 60,
+          "rssi_thr": -80
+        },
+        "sta": {
+          "enable": true,
+          "gw": null,
+          "ip": null,
+          "ipv4mode": "dhcp",
+          "is_open": false,
+          "nameserver": null,
+          "netmask": null,
+          "ssid": "fixture-ssid-1"
+        },
+        "sta1": {
+          "enable": false,
+          "gw": null,
+          "ip": null,
+          "ipv4mode": "dhcp",
+          "is_open": true,
+          "nameserver": null,
+          "netmask": null,
+          "ssid": null
+        }
+      },
+      "ws": {
+        "enable": false,
+        "server": null,
+        "ssl_ca": "ca.pem"
+      }
+    },
+    "status": {
+      "_updated": "2026-11-01 06:25:59",
+      "ble": {
+        "addr": "02:01:00:00:00:02,p"
+      },
+      "cloud": {
+        "connected": true
+      },
+      "code": "S3SN-0U12A",
+      "devicepower:0": {
+        "battery": {
+          "V": 6.03,
+          "percent": 100
+        },
+        "external": {
+          "present": false
+        },
+        "id": 0
+      },
+      "ht_ui": {},
+      "humidity:0": {
+        "id": 0,
+        "rh": 49.9
+      },
+      "id": "020000000006",
+      "matter": {
+        "commissionable": false,
+        "num_fabrics": 0
+      },
+      "mqtt": {
+        "connected": false
+      },
+      "serial": 1793514359,
+      "sys": {
+        "available_updates": {},
+        "cfg_rev": 14,
+        "fs_free": 712704,
+        "fs_size": 1048576,
+        "kvs_rev": 0,
+        "last_sync_ts": 1793514357,
+        "mac": "020000000006",
+        "ram_free": 163900,
+        "ram_min_free": 142368,
+        "ram_size": 273616,
+        "reset_reason": 8,
+        "restart_required": false,
+        "time": "07:25",
+        "unixtime": 1793514358,
+        "uptime": 2,
+        "utc_offset": 3600,
+        "wakeup_period": 7200,
+        "wakeup_reason": {
+          "boot": "deepsleep_wake",
+          "cause": "periodic"
+        },
+        "webhook_rev": 0
+      },
+      "temperature:0": {
+        "id": 0,
+        "tC": 25.2,
+        "tF": 77.4
+      },
+      "ts": 1793514358.86,
+      "wifi": {
+        "bssid": "02:01:00:00:00:01",
+        "channel": 10,
+        "rssi": -76,
+        "ssid": "fixture-ssid-1",
+        "sta_ip": "192.0.2.3",
+        "sta_ip6": [
+          "2001:db8::1"
+        ],
+        "status": "got ip"
+      },
+      "ws": {
+        "connected": false
+      }
+    },
+    "type": "sensor"
+  },
+  {
+    "code": "SHWT-1",
+    "gen": "G1",
+    "id": "000001",
+    "online": 1,
+    "settings": {
+      "_gip_c": "CZ",
+      "_gip_s": "fixture-region",
+      "_updated": "2026-11-01 02:15:46",
+      "actions": {
+        "active": false,
+        "names": [
+          "report_url",
+          "flood_detected_url",
+          "flood_gone_url",
+          "temp_over_url",
+          "temp_under_url"
+        ]
+      },
+      "allow_cross_origin": false,
+      "build_info": {
+        "build_id": "20230913-112632/v1.14.0-gcb84623",
+        "build_timestamp": "2023-09-13T11:26:32Z",
+        "build_version": "1.0"
+      },
+      "cloud": {
+        "connected": true,
+        "enabled": true
+      },
+      "coiot": {
+        "enabled": true,
+        "peer": "",
+        "update_period": 15
+      },
+      "debug_enable": false,
+      "device": {
+        "hostname": "fixture-ssid-3",
+        "mac": "020000000001",
+        "sleep_mode": true,
+        "type": "SHWT-1"
+      },
+      "discoverable": false,
+      "fw": "20230913-112632/v1.14.0-gcb84623",
+      "lat": 0,
+      "lng": 0,
+      "login": {
+        "enabled": false,
+        "unprotected": false,
+        "username": "admin"
+      },
+      "mqtt": {
+        "clean_session": true,
+        "enable": false,
+        "id": "fixture-ssid-3",
+        "keep_alive": 60,
+        "max_qos": 0,
+        "reconnect_timeout_max": 60,
+        "reconnect_timeout_min": 2,
+        "retain": false,
+        "server": "192.0.2.8:1883",
+        "update_period": 30,
+        "user": ""
+      },
+      "name": null,
+      "pin_code": "",
+      "pon_wifi_reset": false,
+      "rain_sensor": false,
+      "sensors": {
+        "temperature_threshold": 0.5,
+        "temperature_unit": "C"
+      },
+      "sleep_mode": {
+        "period": 12,
+        "unit": "h"
+      },
+      "sntp": {
+        "enabled": true,
+        "server": "time.google.com"
+      },
+      "temperature_offset": 0,
+      "time": "",
+      "timezone": "Europe/Prague",
+      "tz_dst": false,
+      "tz_dst_auto": true,
+      "tz_utc_offset": 3600,
+      "tzautodetect": true,
+      "unixtime": 0,
+      "wifi_ap": {
+        "enabled": false,
+        "key": "",
+        "ssid": "fixture-ssid-3"
+      },
+      "wifi_sta": {
+        "dns": null,
+        "enabled": true,
+        "gw": null,
+        "ip": null,
+        "ipv4_method": "dhcp",
+        "mask": null,
+        "ssid": "fixture-ssid-1"
+      },
+      "wifi_sta1": {
+        "dns": null,
+        "enabled": false,
+        "gw": null,
+        "ip": null,
+        "ipv4_method": "dhcp",
+        "mask": null,
+        "ssid": null
+      }
+    },
+    "status": {
+      "_updated": "2026-11-01 02:16:01",
+      "act_reasons": [
+        "sensor"
+      ],
+      "actions_stats": {
+        "skipped": 0
+      },
+      "bat": {
+        "value": 100,
+        "voltage": 3.04
+      },
+      "cfg_changed_cnt": 0,
+      "cloud": {
+        "connected": true,
+        "enabled": true
+      },
+      "flood": false,
+      "fs_free": 146584,
+      "fs_size": 233681,
+      "getinfo": {
+        "fw_info": {
+          "device": "fixture-ssid-3",
+          "fw": "20230913-112632/v1.14.0-gcb84623"
+        }
+      },
+      "has_update": false,
+      "is_valid": true,
+      "mac": "020000000001",
+      "mqtt": {
+        "connected": false
+      },
+      "rain_sensor": false,
+      "ram_free": 42160,
+      "ram_total": 52392,
+      "sensor_error": 0,
+      "serial": 2,
+      "time": "03:16",
+      "tmp": {
+        "is_valid": true,
+        "tC": 24.62,
+        "tF": 76.32,
+        "units": "C",
+        "value": 24.62
+      },
+      "unixtime": 1793499361,
+      "update": {
+        "has_update": false,
+        "new_version": "",
+        "old_version": "20230913-112632/v1.14.0-gcb84623",
+        "status": "unknown"
+      },
+      "uptime": 18,
+      "wifi_sta": {
+        "connected": true,
+        "ip": "192.0.2.4",
+        "rssi": -64,
+        "ssid": "fixture-ssid-1"
+      }
+    },
+    "type": "sensor"
+  },
+  {
+    "code": "SHHT-1",
+    "gen": "G1",
+    "id": "000004",
+    "online": 1,
+    "settings": {
+      "_gip_c": "CZ",
+      "_gip_s": "fixture-region",
+      "_updated": "2026-11-01 07:28:52",
+      "actions": {
+        "active": false,
+        "names": [
+          "report_url",
+          "temp_over_url",
+          "temp_under_url",
+          "hum_over_url",
+          "hum_under_url"
+        ]
+      },
+      "allow_cross_origin": false,
+      "build_info": {
+        "build_id": "20230913-112531/v1.14.0-gcb84623",
+        "build_timestamp": "2023-09-13T11:25:31Z",
+        "build_version": "1.0"
+      },
+      "cloud": {
+        "connected": true,
+        "enabled": true
+      },
+      "coiot": {
+        "enabled": true,
+        "peer": "",
+        "update_period": 15
+      },
+      "debug_enable": false,
+      "device": {
+        "hostname": "fixture-ssid-6",
+        "mac": "020000000004",
+        "sleep_mode": true,
+        "type": "SHHT-1"
+      },
+      "discoverable": false,
+      "external_power": 0,
+      "fw": "20230913-112531/v1.14.0-gcb84623",
+      "humidity_offset": 0,
+      "lat": 0,
+      "lng": 0,
+      "login": {
+        "enabled": false,
+        "unprotected": false,
+        "username": "admin"
+      },
+      "mqtt": {
+        "clean_session": true,
+        "enable": false,
+        "id": "fixture-ssid-6",
+        "keep_alive": 60,
+        "max_qos": 0,
+        "reconnect_timeout_max": 60,
+        "reconnect_timeout_min": 2,
+        "retain": false,
+        "server": "192.0.2.8:1883",
+        "update_period": 30,
+        "user": ""
+      },
+      "name": "jugo1",
+      "pin_code": "",
+      "pon_wifi_reset": false,
+      "sensors": {
+        "humidity_threshold": 0.5,
+        "temperature_threshold": 0.5,
+        "temperature_unit": "C"
+      },
+      "sleep_mode": {
+        "period": 12,
+        "unit": "h"
+      },
+      "sntp": {
+        "enabled": true,
+        "server": "time.google.com"
+      },
+      "temperature_offset": 0,
+      "time": "",
+      "timezone": "Europe/Prague",
+      "tz_dst": false,
+      "tz_dst_auto": true,
+      "tz_utc_offset": 3600,
+      "tzautodetect": true,
+      "unixtime": 0,
+      "wifi_ap": {
+        "enabled": false,
+        "key": "",
+        "ssid": "fixture-ssid-6"
+      },
+      "wifi_sta": {
+        "dns": null,
+        "enabled": true,
+        "gw": null,
+        "ip": null,
+        "ipv4_method": "dhcp",
+        "mask": null,
+        "ssid": "fixture-ssid-1"
+      },
+      "wifi_sta1": {
+        "dns": null,
+        "enabled": false,
+        "gw": null,
+        "ip": null,
+        "ipv4_method": "dhcp",
+        "mask": null,
+        "ssid": null
+      }
+    },
+    "status": {
+      "_updated": "2026-11-01 07:29:07",
+      "act_reasons": [
+        "sensor"
+      ],
+      "actions_stats": {
+        "skipped": 0
+      },
+      "bat": {
+        "value": 100,
+        "voltage": 2.97
+      },
+      "cfg_changed_cnt": 0,
+      "cloud": {
+        "connected": true,
+        "enabled": true
+      },
+      "connect_retries": 0,
+      "fs_free": 153612,
+      "fs_size": 233681,
+      "getinfo": {
+        "fw_info": {
+          "device": "fixture-ssid-6",
+          "fw": "20230913-112531/v1.14.0-gcb84623"
+        }
+      },
+      "has_update": false,
+      "hum": {
+        "is_valid": true,
+        "value": 70
+      },
+      "is_valid": true,
+      "mac": "020000000004",
+      "mqtt": {
+        "connected": false
+      },
+      "ram_free": 42132,
+      "ram_total": 52384,
+      "sensor_error": 0,
+      "serial": 2,
+      "time": "08:29",
+      "tmp": {
+        "is_valid": true,
+        "tC": 26,
+        "tF": 78.8,
+        "units": "C",
+        "value": 26
+      },
+      "unixtime": 1793518148,
+      "update": {
+        "has_update": false,
+        "new_version": "",
+        "old_version": "20230913-112531/v1.14.0-gcb84623",
+        "status": "unknown"
+      },
+      "uptime": 17,
+      "wifi_sta": {
+        "connected": true,
+        "ip": "192.0.2.1",
+        "rssi": -39,
+        "ssid": "fixture-ssid-1"
+      }
+    },
+    "type": "sensor"
+  },
+  {
+    "code": "SHHT-1",
+    "gen": "G1",
+    "id": "000007",
+    "online": 1,
+    "settings": {
+      "_gip_c": "CZ",
+      "_gip_s": "fixture-region",
+      "_updated": "2026-11-01 07:32:55",
+      "actions": {
+        "active": false,
+        "names": [
+          "report_url",
+          "temp_over_url",
+          "temp_under_url",
+          "hum_over_url",
+          "hum_under_url"
+        ]
+      },
+      "allow_cross_origin": false,
+      "build_info": {
+        "build_id": "20230913-112531/v1.14.0-gcb84623",
+        "build_timestamp": "2023-09-13T11:25:31Z",
+        "build_version": "1.0"
+      },
+      "cloud": {
+        "connected": true,
+        "enabled": true
+      },
+      "coiot": {
+        "enabled": true,
+        "peer": "",
+        "update_period": 15
+      },
+      "debug_enable": false,
+      "device": {
+        "hostname": "fixture-ssid-8",
+        "mac": "020000000007",
+        "sleep_mode": true,
+        "type": "SHHT-1"
+      },
+      "discoverable": false,
+      "external_power": 0,
+      "fw": "20230913-112531/v1.14.0-gcb84623",
+      "humidity_offset": 0,
+      "lat": 0,
+      "lng": 0,
+      "login": {
+        "enabled": false,
+        "unprotected": false,
+        "username": "admin"
+      },
+      "mqtt": {
+        "clean_session": true,
+        "enable": false,
+        "id": "fixture-ssid-8",
+        "keep_alive": 60,
+        "max_qos": 0,
+        "reconnect_timeout_max": 60,
+        "reconnect_timeout_min": 2,
+        "retain": false,
+        "server": "192.0.2.8:1883",
+        "update_period": 30,
+        "user": ""
+      },
+      "name": null,
+      "pin_code": "",
+      "pon_wifi_reset": false,
+      "sensors": {
+        "humidity_threshold": 0.5,
+        "temperature_threshold": 0.5,
+        "temperature_unit": "C"
+      },
+      "sleep_mode": {
+        "period": 12,
+        "unit": "h"
+      },
+      "sntp": {
+        "enabled": true,
+        "server": "time.google.com"
+      },
+      "temperature_offset": 0,
+      "time": "",
+      "timezone": "Europe/Prague",
+      "tz_dst": false,
+      "tz_dst_auto": true,
+      "tz_utc_offset": 3600,
+      "tzautodetect": true,
+      "unixtime": 0,
+      "wifi_ap": {
+        "enabled": false,
+        "key": "",
+        "ssid": "fixture-ssid-8"
+      },
+      "wifi_sta": {
+        "dns": null,
+        "enabled": true,
+        "gw": null,
+        "ip": null,
+        "ipv4_method": "dhcp",
+        "mask": null,
+        "ssid": "fixture-ssid-1"
+      },
+      "wifi_sta1": {
+        "dns": null,
+        "enabled": false,
+        "gw": null,
+        "ip": null,
+        "ipv4_method": "dhcp",
+        "mask": null,
+        "ssid": null
+      }
+    },
+    "status": {
+      "_updated": "2026-11-01 07:33:10",
+      "act_reasons": [
+        "sensor"
+      ],
+      "actions_stats": {
+        "skipped": 0
+      },
+      "bat": {
+        "value": 96,
+        "voltage": 2.94
+      },
+      "cfg_changed_cnt": 0,
+      "cloud": {
+        "connected": true,
+        "enabled": true
+      },
+      "connect_retries": 0,
+      "fs_free": 153863,
+      "fs_size": 233681,
+      "getinfo": {
+        "fw_info": {
+          "device": "fixture-ssid-8",
+          "fw": "20230913-112531/v1.14.0-gcb84623"
+        }
+      },
+      "has_update": false,
+      "hum": {
+        "is_valid": true,
+        "value": 61
+      },
+      "is_valid": true,
+      "mac": "020000000007",
+      "mqtt": {
+        "connected": false
+      },
+      "ram_free": 42184,
+      "ram_total": 52384,
+      "sensor_error": 0,
+      "serial": 2,
+      "time": "08:33",
+      "tmp": {
+        "is_valid": true,
+        "tC": 23.5,
+        "tF": 74.3,
+        "units": "C",
+        "value": 23.5
+      },
+      "unixtime": 1793518390,
+      "update": {
+        "has_update": false,
+        "new_version": "",
+        "old_version": "20230913-112531/v1.14.0-gcb84623",
+        "status": "unknown"
+      },
+      "uptime": 18,
+      "wifi_sta": {
+        "connected": true,
+        "ip": "192.0.2.6",
+        "rssi": -56,
+        "ssid": "fixture-ssid-1"
+      }
+    },
+    "type": "sensor"
+  }
+]
