@@ -1,0 +1,88 @@
+# Device inventory for shelog -- documented EXAMPLE.
+#
+# The real inventory is `devices.toml` (gitignored, lives on the server). Copy this file to
+# `devices.toml` and replace every `id` with the device id shown in the Shelly app. The ids
+# below are pseudo ids and will not match any real device.
+#
+# Fields per [[device]]:
+#   id             6 or 12 hex characters, case-insensitive (stored lower-case); unique.
+#   name           short label shown in charts and logs; unique. Errors name devices by this.
+#   group          "subfloor" or "reference".
+#   model          "ht_gen1", "ht_gen3" or "flood_gen1".
+#   note           optional free text.
+#   t_offset       optional calibration offset in deg C, default 0.0. Applied at READ time
+#                  (Phase 4); raw values are always stored uncalibrated.
+#   rh_offset      optional calibration offset in %RH, default 0.0. Not allowed on flood_gen1.
+#   max_silence_s  optional positive integer: seconds without a new report before this device
+#                  counts as silent. Used by the Phase 2 alerts (D-11). 54000 = the documented
+#                  12 h wake period x 1.25 (ht_gen1, flood_gen1); 9000 = 2 h x 1.25 (ht_gen3).
+#                  Plan 01-07 records each device's value and its source (status, cloud
+#                  settings or documented default) in docs/shelly-api.md; Phase 2 tunes the
+#                  thresholds from observed inter-report gaps.
+#
+# Unknown keys are rejected, so a typo cannot silently drop a setting.
+
+[[device]]
+id = "020000000001"
+name = "LR-1"
+group = "subfloor"
+model = "ht_gen1"
+note = "outer corner, assumed worst"
+t_offset = 0.0
+rh_offset = 0.0
+max_silence_s = 54000
+
+[[device]]
+id = "020000000002"
+name = "LR-2"
+group = "subfloor"
+model = "ht_gen1"
+note = "near corner"
+t_offset = 0.0
+rh_offset = 0.0
+max_silence_s = 54000
+
+[[device]]
+id = "020000000003"
+name = "LR-3"
+group = "subfloor"
+model = "ht_gen1"
+t_offset = 0.0
+rh_offset = 0.0
+max_silence_s = 54000
+
+[[device]]
+id = "020000000004"
+name = "LR-4"
+group = "subfloor"
+model = "ht_gen3"
+t_offset = 0.0
+rh_offset = 0.0
+max_silence_s = 9000
+
+[[device]]
+id = "020000000005"
+name = "LR-Flood"
+group = "subfloor"
+model = "flood_gen1"
+note = "centre"
+t_offset = 0.0
+max_silence_s = 54000
+
+[[device]]
+id = "020000000006"
+name = "Work"
+group = "reference"
+model = "ht_gen1"
+t_offset = 0.0
+rh_offset = 0.0
+max_silence_s = 54000
+
+[[device]]
+id = "020000000007"
+name = "Bedroom"
+group = "reference"
+model = "ht_gen1"
+t_offset = 0.0
+rh_offset = 0.0
+max_silence_s = 54000
