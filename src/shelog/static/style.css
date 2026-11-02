@@ -84,3 +84,30 @@ tbody tr:last-child td { border-bottom: 0; }
 
 footer { color: var(--muted); font-size: 0.8rem; margin: 32px auto 40px; }
 footer a { color: var(--accent); }
+
+/* Now strip: the latest measured values lead the page. */
+.now { max-width: 1200px; margin: 0 auto; padding: 0 16px; }
+.now h2 { margin-top: 20px; }
+.now-groups { display: grid; gap: 10px; }
+.now-group { display: flex; flex-wrap: wrap; gap: 8px; align-items: stretch; }
+.now-group > h3 { flex: 0 0 100%; margin: 0; font-size: 0.85rem; font-weight: 600; color: var(--muted); }
+.reading { background: var(--panel); border: 1px solid var(--line); border-left: 4px solid var(--c, var(--line));
+  border-radius: 8px; padding: 6px 12px 8px; min-width: 150px; flex: 1 1 150px; max-width: 220px; }
+.reading.ref { border-left-style: dashed; }
+.reading .name { font-size: 0.85rem; font-weight: 600; }
+.reading .vals { display: flex; gap: 14px; align-items: baseline; font-variant-numeric: tabular-nums; margin: 2px 0; }
+.reading .v { font-size: 1.6rem; font-weight: 650; letter-spacing: -0.02em; line-height: 1.1; }
+.reading .v small { font-size: 0.85rem; font-weight: 500; color: var(--muted); margin-left: 1px; }
+.reading .meta { font-size: 0.75rem; color: var(--muted); }
+.reading.stale .vals { opacity: 0.45; }
+.reading.stale .meta { color: var(--warn); }
+
+/* Collapsed secondary sections: computed metrics, soil and rain. */
+.fold { margin: 24px 0 0; border-top: 1px solid var(--line); padding-top: 4px; }
+.fold > summary { cursor: pointer; color: var(--muted); font-weight: 600; padding: 8px 0; font-size: 0.95rem; }
+.fold > summary:hover, .fold[open] > summary { color: var(--ink); }
+.fold > summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+.fold-note { color: var(--muted); font-size: 0.85rem; max-width: 72ch; margin: 0 0 10px; }
+.fold .table-wrap { margin-bottom: 12px; }
+.chart.minor h3 { color: var(--muted); font-weight: 500; }
+tr.grp th { text-align: left; color: var(--muted); font-weight: 600; background: var(--bg); font-size: 0.8rem; }

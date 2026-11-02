@@ -5,15 +5,20 @@ const TZ = "Europe/Prague";
 const PALETTE = ["#d1495b", "#e8a33d", "#3f9c6d", "#2e86ab", "#8c5ea8", "#c06c2b", "#5a8f29", "#b5487f"];
 const OUTDOOR_VARS = [
   "temperature_2m", "soil_temperature_0cm", "soil_temperature_6cm", "relative_humidity_2m",
-  "abs_humidity", "precipitation", "soil_moisture_0_to_1cm", "soil_moisture_3_to_9cm",
+  "precipitation", "soil_moisture_0_to_1cm", "soil_moisture_3_to_9cm",
 ];
+// Measured values: the main charts.
 const INDOOR = [
-  { field: "t", title: "Temperature", unit: "°C", digits: 1 },
+  { field: "t", title: "Temperature", unit: "°C", digits: 1, outdoor: true },
   { field: "rh", title: "Relative humidity", unit: "%", digits: 1, band: true },
+];
+// Calculated from T and RH: only fetched and drawn while their section is open.
+const DERIVED = [
   { field: "emc", title: "Wood equilibrium moisture content (EMC)", unit: "%", digits: 1 },
   { field: "dew_point", title: "Dew point", unit: "°C", digits: 1 },
   { field: "abs_humidity", title: "Absolute humidity", unit: "g/m³", digits: 2 },
 ];
+const small = () => window.innerWidth < 600;
 
 const state = {
   range: 604800, // seconds back from now, "all", or {from, to}
@@ -104,8 +109,8 @@ function stepped() {
   return uPlot.paths.stepped({ align: 1 });
 }
 
-function makeChart(container, { title, unit, digits, x, series, from, to, band, extraScales, axes2 }) {
-  const box = el("div", { class: "chart" }, el("h3", {}, title));
+function makeChart(container, { title, unit, digits, x, series, from, to, band, extraScales, axes2, minor, height }) {
+  const box = el("div", { class: minor ? "chart minor" : "chart" }, el("h3", {}, title));
   container.append(box);
   if (!x.length || series.every((s) => s.values.every((v) => v == null))) {
     box.append(el("div", { class: "empty" }, "No data in this range."));
@@ -115,7 +120,7 @@ function makeChart(container, { title, unit, digits, x, series, from, to, band, 
   const grid = css("--line");
   const opts = {
     width: Math.max(280, box.clientWidth - 8),
-    height: window.innerWidth < 600 ? 200 : 240,
+    height: height || (small() ? 200 : 240),
     tzDate: (ts) => uPlot.tzDate(new Date(ts * 1e3), TZ),
     cursor: { sync: { key: "shelog" }, drag: { x: true, y: false, setScale: false } },
     select: { show: true },
@@ -127,7 +132,7 @@ function makeChart(container, { title, unit, digits, x, series, from, to, band, 
         label: s.label,
         stroke: s.color,
         fill: s.fill,
-        width: s.width || 1.6,
+        width: s.width || (minor ? 1.2 : 1.6),
         dash: s.dash,
         scale: s.scale || "y",
         spanGaps: false,
@@ -187,14 +192,58 @@ function deviceSeries(body, field, meta) {
   }).filter((s) => s.values.some((v) => v != null));
 }
 
-function renderIndoor(body) {
+// Put an hourly outdoor series onto the indoor x grid (one shared x per uPlot chart).
+// Indoor values are sample-and-hold, so at inserted x they are forward-filled (a null stays
+// a gap); the outdoor series is linear between its hourly points, as in the outdoor charts.
+function withOutdoor(x, series, ox, ov, outSeries) {
+  if (!ox || !ox.length || !ov || ov.every((v) => v == null)) return { x, series };
+  const xs = [...new Set([...x, ...ox])].sort((a, b) => a - b);
+  const filled = series.map((s) => {
+    const out = new Array(xs.length);
+    let i = -1;
+    xs.forEach((xv, k) => {
+      while (i + 1 < x.length && x[i + 1] <= xv) i++;
+      out[k] = i < 0 ? null : s.values[i];
+    });
+    return { ...s, values: out };
+  });
+  const outVals = new Array(xs.length);
+  let j = 0;
+  xs.forEach((xv, k) => {
+    while (j + 1 < ox.length && ox[j + 1] <= xv) j++;
+    if (ox[j] === xv) outVals[k] = ov[j];
+    else if (ox[j] < xv && j + 1 < ox.length && ov[j] != null && ov[j + 1] != null) {
+      outVals[k] = ov[j] + ((ov[j + 1] - ov[j]) * (xv - ox[j])) / (ox[j + 1] - ox[j]);
+    } else outVals[k] = null;
+  });
+  return { x: xs, series: [...filled, { ...outSeries, values: outVals }] };
+}
+
+function renderIndoor(body, out) {
   const box = $("#indoor");
   box.replaceChildren();
-  const from = body.from;
-  const to = body.to;
   for (const meta of INDOOR) {
+    let x = body.x;
+    let ser = deviceSeries(body, meta.field, meta);
+    if (meta.outdoor) {
+      ({ x, series: ser } = withOutdoor(x, ser, out.x, out.vars.temperature_2m, {
+        label: "Outdoor air", color: css("--muted"), width: 1.2, paths: uPlot.paths.linear(), unit: "°C",
+      }));
+    }
+    const c = makeChart(box, { ...meta, x, series: ser, from: body.from, to: body.to, height: small() ? 240 : 320 });
+    if (c) state.charts.push(c);
+  }
+}
+
+function renderDerived(body, stats) {
+  const box = $("#derived-charts");
+  box.replaceChildren();
+  if (!$("#derived").open) return;
+  renderEmcStats(stats);
+  for (const meta of DERIVED) {
+    if (!body.fields[meta.field]) continue;
     const ser = deviceSeries(body, meta.field, meta);
-    const c = makeChart(box, { ...meta, x: body.x, series: ser, from, to });
+    const c = makeChart(box, { ...meta, x: body.x, series: ser, from: body.from, to: body.to, minor: true, height: small() ? 140 : 170 });
     if (c) state.charts.push(c);
   }
 }
@@ -202,6 +251,8 @@ function renderIndoor(body) {
 function renderOutdoor(out, from, to) {
   const box = $("#outdoor");
   box.replaceChildren();
+  const soil = $("#soil-charts");
+  soil.replaceChildren();
   const v = out.vars;
   const linear = uPlot.paths.linear();
   const charts = [
@@ -215,14 +266,10 @@ function renderOutdoor(out, from, to) {
     },
     {
       title: "Air humidity", unit: "%", digits: 0,
-      extraScales: { ah: { auto: true } },
-      axes2: [{ scale: "ah", values: (u, vals) => vals.map((x) => `${x} g`) }],
-      series: [
-        { label: "RH", values: v.relative_humidity_2m, color: "#2e86ab", paths: linear },
-        { label: "Absolute", values: v.abs_humidity, color: "#3f9c6d", paths: linear, scale: "ah", unit: "g/m³", digits: 2 },
-      ],
+      series: [{ label: "RH", values: v.relative_humidity_2m, color: "#2e86ab", paths: linear }],
     },
     {
+      fold: true,
       title: "Precipitation and soil moisture", unit: "mm", digits: 1,
       extraScales: { sm: { auto: true } },
       axes2: [{ scale: "sm", values: (u, vals) => vals.map((x) => x.toFixed(3)) }],
@@ -234,36 +281,89 @@ function renderOutdoor(out, from, to) {
     },
   ];
   for (const spec of charts) {
-    const c = makeChart(box, { ...spec, x: out.x, from, to });
+    if (spec.fold && !$("#soil").open) continue;
+    const c = makeChart(spec.fold ? soil : box, { ...spec, x: out.x, from, to });
     if (c) state.charts.push(c);
   }
 }
 
 /* ---------- stats & health ---------- */
 
-function renderStats(stats) {
-  const t = $("#stats");
-  const head = el("thead", {}, el("tr", {},
-    ...["Device", "Group", "T min", "T mean", "T max", "RH min", "RH mean", "RH max",
-      `RH outside ${stats.band[0]}–${stats.band[1]} %`, "EMC mean", "EMC range", "Coverage",
-      "Last report", "Battery"].map((h) => el("th", { scope: "col" }, h))));
+const GROUPS = [["subfloor", "Subfloor"], ["reference", "Reference rooms"]];
+
+// One table body with a header row per sensor group; `cells(r)` gives the value cells.
+function groupedTable(table, heads, rows, cells) {
+  const head = el("thead", {}, el("tr", {}, ...heads.map((h) => el("th", { scope: "col" }, h))));
   const body = el("tbody");
-  for (const r of stats.devices) {
-    const rh = r.rh || {};
-    const emc = r.emc || {};
-    body.append(el("tr", {},
-      el("td", {}, r.name), el("td", {}, r.group),
-      el("td", {}, num(r.t.min)), el("td", {}, num(r.t.mean)), el("td", {}, num(r.t.max)),
-      el("td", {}, num(rh.min)), el("td", {}, num(rh.mean)), el("td", {}, num(rh.max)),
-      el("td", {}, r.rh_outside_band_pct == null ? "–" : `${num(r.rh_outside_band_pct)} %`),
-      el("td", {}, emc.mean == null ? "–" : `${num(emc.mean)} %`),
-      el("td", {}, emc.min == null ? "–" : `${num(emc.min)}–${num(emc.max)}`),
-      el("td", {}, `${num(r.coverage_pct, 0)} %`),
-      el("td", { title: r.last_report ? fmtTime.format(new Date(r.last_report * 1e3)) : "" }, ago(r.last_report)),
-      el("td", {}, r.battery == null ? "–" : `${num(r.battery, 0)} %`),
-    ));
+  const known = new Set(GROUPS.map(([g]) => g));
+  const groups = [...GROUPS, ...[...new Set(rows.map((r) => r.group))].filter((g) => !known.has(g)).map((g) => [g, g])];
+  for (const [g, label] of groups) {
+    const rs = rows.filter((r) => r.group === g);
+    if (!rs.length) continue;
+    body.append(el("tr", { class: "grp" }, el("th", { colspan: String(heads.length), scope: "colgroup" }, label)));
+    for (const r of rs) body.append(el("tr", {}, el("td", {}, r.name), ...cells(r).map((c) => el("td", {}, c))));
   }
-  t.replaceChildren(head, body);
+  table.replaceChildren(head, body);
+}
+
+function renderStats(stats) {
+  groupedTable($("#stats"),
+    ["Sensor", "T min", "T mean", "T max", "RH min", "RH mean", "RH max",
+      `RH outside ${stats.band[0]}–${stats.band[1]} %`, "Coverage"],
+    stats.devices,
+    (r) => {
+      const rh = r.rh || {};
+      return [num(r.t.min), num(r.t.mean), num(r.t.max), num(rh.min), num(rh.mean), num(rh.max),
+        r.rh_outside_band_pct == null ? "–" : `${num(r.rh_outside_band_pct)} %`,
+        `${num(r.coverage_pct, 0)} %`];
+    });
+}
+
+function renderEmcStats(stats) {
+  groupedTable($("#emc-stats"), ["Sensor", "EMC mean", "EMC range"], stats.devices, (r) => {
+    const emc = r.emc || {};
+    return [emc.mean == null ? "–" : `${num(emc.mean)} %`,
+      emc.min == null ? "–" : `${num(emc.min)}–${num(emc.max)} %`];
+  });
+}
+
+// Latest measured values of every sensor. A short window is enough: the API forward-fills
+// the report held at its start and returns null once a sensor is silent past its threshold.
+async function refreshNow(health) {
+  const now = Math.floor(Date.now() / 1000);
+  let body;
+  try {
+    body = await getJSON(`api/readings?${new URLSearchParams({ from: now - 60, to: now, resample: "none", fields: "t,rh,battery" })}`);
+  } catch (_) {
+    return;
+  }
+  const last = (col) => (col && col.length ? col[col.length - 1] : null);
+  const hdev = new Map((health?.devices || []).map((d) => [d.name, d]));
+  const box = $("#now");
+  box.replaceChildren();
+  for (const [g, label] of GROUPS) {
+    const devs = state.devices.filter((d) => d.group === g);
+    if (!devs.length) continue;
+    const row = el("div", { class: "now-group" }, el("h3", {}, label));
+    for (const d of devs) {
+      const i = body.devices.indexOf(d.name);
+      const t = i < 0 ? null : last(body.fields.t[i]);
+      const rh = i < 0 ? null : last(body.fields.rh[i]);
+      const bat = i < 0 ? null : last(body.fields.battery[i]);
+      const h = hdev.get(d.name);
+      const stale = h ? h.silent : t == null;
+      const vals = el("div", { class: "vals" },
+        el("span", { class: "v" }, num(t), el("small", {}, "°C")));
+      if (d.has_rh) vals.append(el("span", { class: "v" }, num(rh, 0), el("small", {}, "%")));
+      const meta = [h ? (stale ? `silent, last report ${ago(h.last_report)}` : ago(h.last_report)) : ""];
+      if (bat != null) meta.push(`battery ${num(bat, 0)} %`);
+      const card = el("div", { class: `reading${g === "reference" ? " ref" : ""}${stale ? " stale" : ""}` },
+        el("div", { class: "name" }, d.name), vals, el("div", { class: "meta" }, meta.filter(Boolean).join(", ")));
+      card.style.setProperty("--c", d.color);
+      row.append(card);
+    }
+    box.append(row);
+  }
 }
 
 async function refreshHealth() {
@@ -273,8 +373,10 @@ async function refreshHealth() {
     h = await getJSON("api/health");
   } catch (_) {
     box.textContent = "Status unavailable";
+    refreshNow(null);
     return;
   }
+  refreshNow(h);
   const colors = { ok: "--ok", degraded: "--warn", down: "--bad", starting: "--muted" };
   const label = { ok: "Logging", degraded: "Logging, with warnings", down: "Logging stopped", starting: "Starting" };
   const dot = el("span", { class: "dot" });
@@ -372,7 +474,8 @@ function toLocalInput(ts) {
 let loadSeq = 0;
 async function load() {
   const seq = ++loadSeq;
-  const fields = INDOOR.map((m) => m.field).join(",");
+  const metas = $("#derived").open ? [...INDOOR, ...DERIVED] : INDOOR;
+  const fields = metas.map((m) => m.field).join(",");
   try {
     // Stats resolve the actual range (also for "all"), which picks the resampling.
     const stats = await getJSON(`api/stats?${params({ band_lo: $("#band_lo").value, band_hi: $("#band_hi").value })}`);
@@ -384,8 +487,9 @@ async function load() {
     if (seq !== loadSeq) return;
     state.charts.forEach((c) => c.destroy());
     state.charts = [];
-    renderIndoor(body);
+    renderIndoor(body, out);
     renderStats(stats);
+    renderDerived(body, stats);
     renderOutdoor(out, body.from, body.to);
     $("#range-label").textContent =
       `${fmtTime.format(new Date(body.from * 1e3))} – ${fmtTime.format(new Date(body.to * 1e3))}`;
@@ -407,6 +511,16 @@ async function init() {
     if (Number.isFinite(a) && Number.isFinite(b) && b > a) setRange({ from: a, to: b });
   });
   for (const id of ["#resample", "#band_lo", "#band_hi"]) $(id).addEventListener("change", load);
+  // Folded sections remember their state; opening one loads and draws its contents.
+  let ready = false;
+  for (const id of ["derived", "soil"]) {
+    const d = document.getElementById(id);
+    d.open = store(`shelog.open.${id}`) === true;
+    d.addEventListener("toggle", () => {
+      store(`shelog.open.${id}`, d.open);
+      if (ready) load();
+    });
+  }
   let resizeTimer;
   window.addEventListener("resize", () => {
     clearTimeout(resizeTimer);
@@ -429,6 +543,7 @@ async function init() {
   refreshHealth();
   setInterval(refreshHealth, 60000);
   setInterval(() => { if (typeof state.range !== "object") load(); }, 5 * 60000);
+  ready = true;
   load();
 }
 

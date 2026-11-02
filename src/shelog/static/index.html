@@ -18,6 +18,11 @@
 </header>
 <div id="banner" class="banner" hidden></div>
 
+<section class="now" aria-labelledby="now-h">
+  <h2 id="now-h">Now</h2>
+  <div id="now" class="now-groups" aria-live="polite"></div>
+</section>
+
 <section class="controls" aria-label="Controls">
   <div class="row" role="group" aria-label="Time range">
     <span class="lbl">Range</span>
@@ -53,13 +58,26 @@
   <div id="indoor" class="charts"></div>
   <h2>Statistics <span class="range-label" id="range-label"></span></h2>
   <div class="table-wrap"><table id="stats"></table></div>
+  <details id="derived" class="fold">
+    <summary>Calculated from temperature and humidity</summary>
+    <p class="fold-note">These values are not measured. Each one is computed from a sensor's temperature and humidity.
+    EMC is the moisture content wood would settle at in this air. It is not the moisture of the slab.
+    Formula: Hailwood–Horrobin (USDA Wood Handbook).</p>
+    <div class="table-wrap"><table id="emc-stats"></table></div>
+    <div id="derived-charts" class="charts"></div>
+  </details>
   <h2>Outdoor <span class="model-note">model data for the area, not measured at the flat</span></h2>
   <div id="outdoor" class="charts"></div>
+  <details id="soil" class="fold">
+    <summary>Rain and soil moisture</summary>
+    <div id="soil-charts" class="charts"></div>
+  </details>
 </main>
 
 <footer>
   <p><a href="https://open-meteo.com/">Weather data by Open-Meteo.com</a> (CC BY 4.0).
-  EMC: Hailwood–Horrobin (USDA Wood Handbook). Lines are steps: each reading holds until the next report; gaps mean the sensor was silent past its threshold or the logger was down.</p>
+  Lines are steps: each reading holds until the next report; gaps mean the sensor was silent past its threshold or the logger was down.
+  The grey line on the temperature chart is outdoor air temperature; click its legend entry to hide it.</p>
 </footer>
 <script src="vendor/uplot-1.6.32/uPlot.iife.min.js"></script>
 <script src="app.js"></script>
